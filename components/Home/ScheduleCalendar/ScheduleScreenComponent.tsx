@@ -7,6 +7,7 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ScheduleCalendarComponent from './ScheduleCalendarComponent';
 import CourseCartComponent from './CourseCart/CourseCartComponent';
+import CourseSearchScreenComponent from './CourseCart/CourseSearch/CourseSearchScreenComponent';
 
 const ScheduleScreen = createNativeStackNavigator<ScheduleScreenParamsList>();
 
@@ -23,13 +24,13 @@ const ScheduleScreenComponent = ({
       <ScheduleScreen.Screen
         name="CourseCart"
         component={CourseCartComponent}
-        options={{headerBackTitle: 'Schedule'}}
+        options={{headerBackTitle: 'Back', headerTitle: 'My Classes'}}
       />
-      {/* <ScheduleScreen.Screen
+      <ScheduleScreen.Screen
         name="CourseSearch"
-        component={ScheduleCalendarComponent}
-        // options={{headerShown: false}}
-      /> */}
+        component={CourseSearchScreenComponent}
+        options={{presentation: 'modal', headerShown: false}}
+      />
     </ScheduleScreen.Navigator>
   );
 };

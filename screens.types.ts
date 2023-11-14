@@ -5,7 +5,6 @@ export type AppStackParamsList = {
   Login: undefined;
   Signup: undefined;
   Home: BottomTabScreenProps<HomeTabParamsList>;
-  CourseCart: undefined;
 };
 
 export type HomeTabParamsList = {
@@ -17,5 +16,12 @@ export type HomeTabParamsList = {
 export type ScheduleScreenParamsList = {
   ScheduleCalendar: undefined;
   CourseCart: undefined;
-  CourseSearch: undefined;
+  CourseSearch: NativeStackScreenProps<CourseSearchScreenParamsList>;
+};
+
+export type CourseSearchScreenParamsList = {
+  CourseSearchForm: undefined;
+  CourseSearchResult: {
+    classesData: string[];
+  };
 };

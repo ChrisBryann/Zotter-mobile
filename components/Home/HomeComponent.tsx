@@ -9,7 +9,7 @@ import {
   BookmarkIcon,
   UserIcon,
 } from 'react-native-heroicons/solid';
-import ScheduleListComponent from './ScheduleListComponent';
+import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamsList>();
@@ -40,7 +40,7 @@ const HomeComponent = ({
         //   borderTopRightRadius: 15,
         //   position: 'absolute',
         // },
-        tabBarActiveBackgroundColor: '#E2E8F0',
+        tabBarActiveBackgroundColor: '#BFDBFE',
         tabBarItemStyle: {
           borderRadius: 15,
           margin: 5,

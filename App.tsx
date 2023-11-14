@@ -5,7 +5,7 @@ import {AppStackParamsList} from './screens.types';
 import LoginComponent from './components/Auth/LoginComponent';
 import SignupComponent from './components/Auth/SignupComponent';
 import HomeComponent from './components/Home/HomeComponent';
-import CourseCartComponent from './components/Home/ScheduleCalendar/CourseCart/CourseCartComponent';
+import {SelectProvider} from '@mobile-reality/react-native-select-pro';
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
@@ -28,7 +28,6 @@ const App = () => {
           component={HomeComponent}
           options={{headerShown: false}}
         />
-        <AppStack.Screen name="CourseCart" component={CourseCartComponent} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Modal, Text, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ShoppingBagIcon, PlusIcon} from 'react-native-heroicons/outline';
@@ -205,6 +205,10 @@ export const WEEK_VALUES = {
 const ScheduleCalendarComponent = ({
   navigation,
 }: NativeStackScreenProps<ScheduleScreenParamsList, 'ScheduleCalendar'>) => {
+  const [scheduleName, setScheduleName] = useState<string>('mySchedule1');
+  const [isScheduleNameModalOpen, setIsScheduleNameModalOpen] =
+    useState<boolean>(false);
+
   const [currentDate, setCurrentDate] = useState<string>(
     moment().startOf('week').add(1, 'days').format(TIME_FORMAT),
   );
@@ -245,6 +249,7 @@ const ScheduleCalendarComponent = ({
   const INITIAL_TIME = {hour: 9, minutes: 0};
   return (
     <SafeAreaView className="flex-1 bg-white">
+      {/* <Modal visible={isScheduleNameModalOpen} /> */}
       <CalendarProvider
         date={currentDate} // set this to current week's Monday
         onDateChanged={onDateChanged}
@@ -255,9 +260,12 @@ const ScheduleCalendarComponent = ({
           disableWeekScroll={true}
           renderHeader={_ => {
             return (
-              <View>
-                <Text className="text-lg">Week Schedule</Text>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsScheduleNameModalOpen(true);
+                }}>
+                <Text className="text-lg font-semibold">{scheduleName}</Text>
+              </TouchableOpacity>
             );
           }}
           hideKnob
@@ -267,7 +275,7 @@ const ScheduleCalendarComponent = ({
                 onPress={
                   direction === 'left'
                     ? () => {
-                        navigation.navigate('CourseCart');
+                        navigation.navigate('CourseSearch');
                       }
                     : () => {
                         navigation.navigate('CourseCart');
