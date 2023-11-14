@@ -1,11 +1,11 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {Text, View} from 'react-native';
 import {AppStackParamsList} from './screens.types';
 import LoginComponent from './components/Auth/LoginComponent';
 import SignupComponent from './components/Auth/SignupComponent';
 import HomeComponent from './components/Home/HomeComponent';
+import CourseCartComponent from './components/Home/ScheduleCalendar/CourseCart/CourseCartComponent';
 
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
@@ -28,6 +28,7 @@ const App = () => {
           component={HomeComponent}
           options={{headerShown: false}}
         />
+        <AppStack.Screen name="CourseCart" component={CourseCartComponent} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

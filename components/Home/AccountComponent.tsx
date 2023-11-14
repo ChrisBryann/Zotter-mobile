@@ -8,8 +8,10 @@ const AccountComponent = ({
   navigation,
 }: BottomTabScreenProps<HomeTabParamsList, 'Account'>) => {
   return (
-    <SafeAreaView className="flex-1 items-center justify-start pt-6 gap-4">
-      <Text>Hello Account</Text>
+    <SafeAreaView className="flex-1 p-6 gap-4 bg-white">
+      <Text className="text-left text-4xl font-semibold py-2">
+        Account Information
+      </Text>
     </SafeAreaView>
   );
 };
