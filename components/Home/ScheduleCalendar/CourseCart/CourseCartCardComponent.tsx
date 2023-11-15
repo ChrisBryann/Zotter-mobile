@@ -12,7 +12,7 @@ const CourseCartCardComponent = ({item}: CourseCartCardProps) => {
     //   <Text>{item}</Text>
     // </View>
 
-    <View className="flex flex-row items-center justify-between my-6 px-6">
+    <View className="flex flex-row items-center justify-between my-2  p-3">
       <View>
         <Text className="text-lg font-bold text-gray-900">
           COMPSCI 116 - Lec A

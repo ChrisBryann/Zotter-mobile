@@ -5,10 +5,15 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AccountComponent from './AccountComponent';
 import {RouteProp} from '@react-navigation/native';
 import {
+  CalendarDaysIcon as CalendarDaysSolidIcon,
+  BookmarkIcon as BookmarkSolidIcon,
+  UserIcon as UserSolidIcon,
+} from 'react-native-heroicons/solid';
+import {
   CalendarDaysIcon,
   BookmarkIcon,
   UserIcon,
-} from 'react-native-heroicons/solid';
+} from 'react-native-heroicons/outline';
 import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
 
@@ -24,13 +29,23 @@ const HomeComponent = ({
       }: {
         route: RouteProp<HomeTabParamsList, keyof HomeTabParamsList>;
       }) => ({
-        tabBarIcon: () => {
+        tabBarIcon: ({focused, color, size}) => {
           return route.name === 'ScheduleScreen' ? (
-            <CalendarDaysIcon color={'#1D4ED8'} />
+            focused ? (
+              <CalendarDaysSolidIcon color={color} />
+            ) : (
+              <CalendarDaysIcon color={color} />
+            )
           ) : route.name === 'ScheduleList' ? (
-            <BookmarkIcon color={'#1D4ED8'} />
+            focused ? (
+              <BookmarkSolidIcon color={color} />
+            ) : (
+              <BookmarkIcon color={color} />
+            )
+          ) : focused ? (
+            <UserSolidIcon color={color} />
           ) : (
-            <UserIcon color={'#1D4ED8'} />
+            <UserIcon color={color} />
           );
         },
         tabBarShowLabel: false,
@@ -40,7 +55,11 @@ const HomeComponent = ({
         //   borderTopRightRadius: 15,
         //   position: 'absolute',
         // },
-        tabBarActiveBackgroundColor: '#BFDBFE',
+        tabBarActiveTintColor: '#D8A71D',
+        tabBarInactiveTintColor: '#D8A71D',
+        tabBarStyle: {
+          backgroundColor: '#1D4ED8',
+        },
         tabBarItemStyle: {
           borderRadius: 15,
           margin: 5,

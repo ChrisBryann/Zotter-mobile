@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {CourseSearchScreenParamsList} from '../../../../../screens.types';
+import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   ScrollView,

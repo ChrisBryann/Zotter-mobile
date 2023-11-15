@@ -7,7 +7,7 @@ import {
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ScheduleCalendarComponent from './ScheduleCalendarComponent';
 import CourseCartComponent from './CourseCart/CourseCartComponent';
-import CourseSearchScreenComponent from './CourseCart/CourseSearch/CourseSearchScreenComponent';
+import CourseSearchScreenComponent from './CourseSearch/CourseSearchScreenComponent';
 
 const ScheduleScreen = createNativeStackNavigator<ScheduleScreenParamsList>();
 

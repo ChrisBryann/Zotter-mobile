@@ -3,6 +3,7 @@ import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../../screens.types';
 import CourseCartCardComponent from './CourseCartCardComponent';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import FlatListItemSeparator from '../../../UI/FlatListItemSeparator';
 
 const CourseCartComponent = ({
   navigation,

@@ -6,7 +6,7 @@ import {
 import {
   CourseSearchScreenParamsList,
   ScheduleScreenParamsList,
-} from '../../../../../screens.types';
+} from '../../../../screens.types';
 import CourseSearchFormComponent from './CourseSearchFormComponent';
 import CourseSearchResultComponent from './CourseSearchResultComponent';
 
@@ -14,7 +14,7 @@ const CourseSearchScreen =
   createNativeStackNavigator<CourseSearchScreenParamsList>();
 
 const CourseSearchScreenComponent = ({
-  navigaiton,
+  navigation,
 }: NativeStackScreenProps<ScheduleScreenParamsList, 'CourseSearch'>) => {
   return (
     <CourseSearchScreen.Navigator initialRouteName="CourseSearchForm">

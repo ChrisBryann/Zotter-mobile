@@ -10,7 +10,7 @@ const ScheduleListComponent = ({
 }: BottomTabScreenProps<HomeTabParamsList, 'ScheduleList'>) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <Text className="text-left text-4xl font-semibold py-2 px-6">
+      <Text className="text-center text-4xl font-semibold py-2 px-2">
         Saved Schedules
       </Text>
       <View className="border-b border-gray-200" />

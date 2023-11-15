@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal, Text, TouchableOpacity, View} from 'react-native';
+import {Modal, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ShoppingBagIcon, PlusIcon} from 'react-native-heroicons/outline';
@@ -205,8 +205,8 @@ export const WEEK_VALUES = {
 const ScheduleCalendarComponent = ({
   navigation,
 }: NativeStackScreenProps<ScheduleScreenParamsList, 'ScheduleCalendar'>) => {
-  const [scheduleName, setScheduleName] = useState<string>('mySchedule1');
-  const [isScheduleNameModalOpen, setIsScheduleNameModalOpen] =
+  const [scheduleName, setScheduleName] = useState<string>('');
+  const [isEditingScheduleName, setIsEditingScheduleName] =
     useState<boolean>(false);
 
   const [currentDate, setCurrentDate] = useState<string>(
@@ -249,7 +249,6 @@ const ScheduleCalendarComponent = ({
   const INITIAL_TIME = {hour: 9, minutes: 0};
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* <Modal visible={isScheduleNameModalOpen} /> */}
       <CalendarProvider
         date={currentDate} // set this to current week's Monday
         onDateChanged={onDateChanged}
@@ -258,13 +257,21 @@ const ScheduleCalendarComponent = ({
         <ExpandableCalendar
           firstDay={1}
           disableWeekScroll={true}
+          theme={{
+            selectedDayBackgroundColor: '#1D4ED8',
+            todayTextColor: 'black',
+            textSectionTitleColor: 'black',
+            dayTextColor: 'black',
+          }}
           renderHeader={_ => {
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  setIsScheduleNameModalOpen(true);
-                }}>
-                <Text className="text-lg font-semibold">{scheduleName}</Text>
+              <TouchableOpacity>
+                <TextInput
+                  className="text-lg font-semibold py-2 text-center"
+                  onChangeText={setScheduleName}
+                  value={scheduleName}
+                  placeholder='Schedule Title'
+                />
               </TouchableOpacity>
             );
           }}
