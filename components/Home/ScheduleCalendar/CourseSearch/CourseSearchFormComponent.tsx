@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import {Select} from '@mobile-reality/react-native-select-pro';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {CourseSearchResult} from '../../../../store/types';
 
 const CourseSearchFormComponent = ({
   navigation,
@@ -18,91 +19,121 @@ const CourseSearchFormComponent = ({
   CourseSearchScreenParamsList,
   'CourseSearchForm'
 >) => {
-  const [term, setTerm] = useState<{value: string; key: string}[]>([
-    {
-      value: 'Option 1',
-      key: 'option1',
-    },
-    {
-      value: 'Option 2',
-      key: 'option2',
-    },
-    {
-      value: 'Option 3',
-      key: 'option3',
-    },
-    {
-      value: 'Option 4',
-      key: 'option4',
-    },
-  ]);
+  const [term, setTerm] = useState<{value: string; key: string}[]>([]);
   const [selectedTerm, setSelectedTerm] = useState<string>('');
 
-  const [GE, setGE] = useState<{value: string; key: string}[]>([
-    {
-      value: 'Option 1',
-      key: 'option1',
-    },
-    {
-      value: 'Option 2',
-      key: 'option2',
-    },
-    {
-      value: 'Option 3',
-      key: 'option3',
-    },
-    {
-      value: 'Option 4',
-      key: 'option4',
-    },
-  ]);
+  const [GE, setGE] = useState<{value: string; key: string}[]>([]);
   const [selectedGE, setSelectedGE] = useState<string>('');
 
-  const [dept, setDept] = useState<{value: string; key: string}[]>([
-    {
-      value: 'Option 1',
-      key: 'option1',
-    },
-    {
-      value: 'Option 2',
-      key: 'option2',
-    },
-    {
-      value: 'Option 3',
-      key: 'option3',
-    },
-    {
-      value: 'Option 4',
-      key: 'option4',
-    },
-  ]);
+  const [dept, setDept] = useState<{value: string; key: string}[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>('');
 
+  useEffect(() => {
+    const getFormInfo = async () => {
+      // set loading here
+      await fetch('https://zotter-4e7fd16e0ef2.herokuapp.com/get-form-info')
+        .then(async data => {
+          const res = await data.json();
+
+          setTerm(
+            res.terms.map((t: string) => ({
+              key: t,
+              value: t,
+            })),
+          );
+          setSelectedTerm(res.terms[0] as string);
+          setDept(
+            res.departments.map((d: {type: string; value: string}) => ({
+              key: d.type,
+              value: d.value,
+            })),
+          );
+          setSelectedDept(res.departments[0].type as string);
+          setGE(
+            res.genEducation.map((g: {type: string; value: string}) => ({
+              key: g.type,
+              value: g.value,
+            })),
+          );
+          setSelectedGE(res.genEducation[0].type as string);
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+    };
+    getFormInfo();
+  }, []);
+
+  const onSubmitHandler = () => {
+    console.log(
+      'https://api.peterportal.org/rest/v0/schedule/soc?' +
+        new URLSearchParams({
+          term: selectedTerm,
+          department: selectedDept,
+          ge: selectedGE,
+        }),
+    );
+    fetch(
+      'https://api.peterportal.org/rest/v0/schedule/soc?' +
+        new URLSearchParams({
+          term: selectedTerm,
+          department: selectedDept,
+          ge: selectedGE,
+        }),
+    )
+      .then(async data => {
+        const res = await data.json();
+        if (res.schools.length !== 0) {
+          const coursesData = res.schools[0].departments[0]
+            .courses as CourseSearchResult[];
+          navigation.navigate('CourseSearchResult', {coursesData});
+        } else {
+          // indicates that no classes are found with those criteria
+          console.log('no classes!');
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
+  };
   return (
     <SafeAreaView className="flex-1 bg-white h-full">
-      <Text className="p-4 pt-0 text-4xl text-center font-bold">Search Classes</Text>
+      <Text className="p-4 pt-0 text-4xl text-center font-bold">
+        Search Classes
+      </Text>
       <ScrollView>
         <View className="flex items-center gap-6">
           <View className="w-10/12 gap-y-2">
-            <Text className="text-lg font-semibold">Term {selectedTerm}</Text>
-            <SelectList data={term} setSelected={setSelectedTerm} save="key" />
+            <Text className="text-lg font-semibold">Term</Text>
+            <SelectList
+              defaultOption={term[0]}
+              data={term}
+              setSelected={setSelectedTerm}
+              save="key"
+            />
           </View>
           <View className="w-10/12">
             <Text className="text-lg font-semibold">General Education</Text>
-            <SelectList data={term} setSelected={setSelectedTerm} save="key" />
+            <SelectList
+              defaultOption={GE[0]}
+              data={GE}
+              setSelected={setSelectedGE}
+              save="key"
+            />
           </View>
           <View className="w-10/12">
             <Text className="text-lg font-semibold">Department</Text>
-            <SelectList data={term} setSelected={setSelectedTerm} save="key" />
+            <SelectList
+              defaultOption={dept[0]}
+              data={dept}
+              setSelected={setSelectedDept}
+              save="key"
+            />
           </View>
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={() => {
-          let classesData: string[] = [];
-          // do some fetching on peterportal api to get classes result and make some loading component
-          navigation.navigate('CourseSearchResult', {classesData});
-        }}
+        onPress={onSubmitHandler}
         className="w-10/12 bg-blue-600 p-2 rounded-lg mx-auto my-4">
         <Text className="text-center text-lg text-white font-semibold">
           Search

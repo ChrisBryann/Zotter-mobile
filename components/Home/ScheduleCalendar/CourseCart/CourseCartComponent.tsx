@@ -23,22 +23,21 @@ const CourseCartComponent = ({
         />
         <View className="bottom-0 border-t border-gray-100">
           <View className="w-screen flex flex-row justify-between items-center p-4">
-            <View className="space-y-0.5 text-sm text-gray-700">
-              <Text className="text-xl font-semibold">Total: 12</Text>
-            </View>
+            <Text className="text-xl font-semibold">Total:</Text>
+            <Text className="text-xl font-semibold">12</Text>
 
-            <View className="flex flex-row justify-end gap-2 bottom-0">
-              {/* <TouchableOpacity className="rounded-lg bg-blue-600 px-5 py-3">
-              <Text className="text-sm text-white text-center font-semibold">
-                Add to WebReg
-              </Text>
-            </TouchableOpacity> */}
+            {/* <View className="flex flex-row justify-end gap-2 bottom-0">
+              <TouchableOpacity className="rounded-lg bg-blue-600 px-5 py-3">
+                <Text className="text-sm text-white text-center font-semibold">
+                  Add to WebReg
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity className="rounded-lg bg-blue-600 px-5 py-3">
                 <Text className="text-sm text-white text-center font-semibold">
                   Save
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </View>
       </View>

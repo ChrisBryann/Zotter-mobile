@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Modal, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../screens.types';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {ShoppingBagIcon, PlusIcon} from 'react-native-heroicons/outline';
+
+import {NoSymbolIcon} from 'react-native-heroicons/outline';
 import {
   CalendarProvider,
   ExpandableCalendar,
@@ -13,6 +13,15 @@ import {
 } from 'react-native-calendars';
 import moment from 'moment';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {
+  AcademicCapIcon,
+  BookmarkSquareIcon,
+  MagnifyingGlassPlusIcon,
+  PlusCircleIcon,
+  ShoppingBagIcon,
+} from 'react-native-heroicons/solid';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {TIME_FORMAT} from '../../../utils/utils';
 /*export interface Event {
     id?: string;
     start: string;
@@ -21,8 +30,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
     summary?: string;
     color?: string;
 } */
-
-export const TIME_FORMAT = 'YYYY-MM-DD';
 
 export const timelineEvents: TimelineEventProps[] = [
   {
@@ -201,7 +208,7 @@ export const WEEK_VALUES = {
   Sat: 6,
   Sun: 0,
 };
-
+// in this page, show two optiosn: create new, or load
 const ScheduleCalendarComponent = ({
   navigation,
 }: NativeStackScreenProps<ScheduleScreenParamsList, 'ScheduleCalendar'>) => {
@@ -247,8 +254,13 @@ const ScheduleCalendarComponent = ({
     rightEdgeSpacing: 24,
   };
   const INITIAL_TIME = {hour: 9, minutes: 0};
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View
+      style={{
+        paddingTop: insets.top,
+      }}
+      className="flex-1 bg-white">
       <CalendarProvider
         date={currentDate} // set this to current week's Monday
         onDateChanged={onDateChanged}
@@ -270,7 +282,7 @@ const ScheduleCalendarComponent = ({
                   className="text-lg font-semibold py-2 text-center"
                   onChangeText={setScheduleName}
                   value={scheduleName}
-                  placeholder='Schedule Title'
+                  placeholder="Schedule Title"
                 />
               </TouchableOpacity>
             );
@@ -280,25 +292,19 @@ const ScheduleCalendarComponent = ({
             return (
               <TouchableOpacity
                 onPress={
-                  direction === 'left'
-                    ? () => {
-                        navigation.navigate('CourseSearch');
-                      }
-                    : () => {
-                        navigation.navigate('CourseCart');
-                      }
+                  direction === 'right' &&
+                  (() => {
+                    navigation.navigate('CourseCart');
+                  })
                 }>
-                {direction === 'left' ? (
-                  <PlusIcon color={'#1D4ED8'} />
-                ) : (
-                  <ShoppingBagIcon color={'#1D4ED8'} />
-                )}
+                {direction === 'right' && <ShoppingBagIcon color={'#1D4ED8'} />}
               </TouchableOpacity>
             );
           }}
           disableArrowLeft
           disableArrowRight
           disablePan={true}
+          showsHorizontalScrollIndicator={false}
         />
         <TimelineList
           events={eventsByDate}
@@ -308,7 +314,23 @@ const ScheduleCalendarComponent = ({
           initialTime={INITIAL_TIME} // initial time must always be on the Monday for this to work
         />
       </CalendarProvider>
-    </SafeAreaView>
+      <View className="flex flex-row items-center justify-around p-2 rounded-t-2xl">
+        <TouchableOpacity className="bg-gray-500 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
+          <Text className="text-white text-lg font-semibold">Clear</Text>
+          <NoSymbolIcon color={'white'} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CourseSearch')}
+          className="bg-yellow-600 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
+          <Text className="text-white text-lg font-semibold">Find Class</Text>
+          <AcademicCapIcon color={'white'} />
+        </TouchableOpacity>
+        <TouchableOpacity className="bg-blue-600 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
+          <Text className="text-white text-lg font-semibold">Save</Text>
+          <BookmarkSquareIcon color={'white'} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 

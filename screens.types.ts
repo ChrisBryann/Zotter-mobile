@@ -1,5 +1,6 @@
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {CourseSearchResult} from './store/types';
 
 export type AppStackParamsList = {
   Login: undefined;
@@ -22,6 +23,6 @@ export type ScheduleScreenParamsList = {
 export type CourseSearchScreenParamsList = {
   CourseSearchForm: undefined;
   CourseSearchResult: {
-    classesData: string[];
+    coursesData: CourseSearchResult[];
   };
 };

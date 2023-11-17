@@ -16,6 +16,7 @@ import {
 } from 'react-native-heroicons/outline';
 import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
+import {Text} from 'react-native';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamsList>();
 
@@ -48,6 +49,15 @@ const HomeComponent = ({
             <UserIcon color={color} />
           );
         },
+        // tabBarLabel: ({focused, color, size}) => {
+        //   return route.name === 'ScheduleScreen' ? (
+        //     <Text className={`text-sm`}>Calendar</Text>
+        //   ) : route.name === 'ScheduleList' ? (
+        //     <Text>Schedules</Text>
+        //   ) : (
+        //     <Text>Profile</Text>
+        //   );
+        // },
         tabBarShowLabel: false,
         // tabBarStyle: {
         //   borderTopWidth: 0,
@@ -55,17 +65,16 @@ const HomeComponent = ({
         //   borderTopRightRadius: 15,
         //   position: 'absolute',
         // },
-        tabBarActiveTintColor: '#D8A71D',
-        tabBarInactiveTintColor: '#D8A71D',
-        tabBarStyle: {
-          backgroundColor: '#1D4ED8',
-        },
+        tabBarActiveTintColor: '#1D4ED8',
+        tabBarInactiveTintColor: '#1D4ED8',
         tabBarItemStyle: {
-          borderRadius: 15,
-          margin: 5,
-          marginHorizontal: 10,
+          borderRadius: 10,
+          marginVertical: 5,
+          marginHorizontal: 20,
         },
-      })}>
+        tabBarActiveBackgroundColor: '#DBEAFE',
+      })}
+      initialRouteName="ScheduleList">
       <HomeTab.Screen
         name="ScheduleScreen"
         component={ScheduleScreenComponent}
