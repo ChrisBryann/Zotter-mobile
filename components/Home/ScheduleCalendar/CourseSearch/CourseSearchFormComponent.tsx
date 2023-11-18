@@ -2,14 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Select} from '@mobile-reality/react-native-select-pro';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {CourseSearchResult} from '../../../../store/types';
 

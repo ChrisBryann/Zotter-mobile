@@ -8,32 +8,37 @@ import HomeComponent from './components/Home/HomeComponent';
 import {Provider} from 'react-redux';
 import {persistor, store} from './store/configureStore';
 import {PersistGate} from 'redux-persist/integration/react';
-
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
 const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
-          <AppStack.Navigator>
-            <AppStack.Screen
-              name="Login"
-              component={LoginComponent}
-              options={{headerShown: false}}
-            />
-            <AppStack.Screen
-              name="Signup"
-              component={SignupComponent}
-              options={{headerShown: false}}
-            />
-            <AppStack.Screen
-              name="Home"
-              component={HomeComponent}
-              options={{headerShown: false}}
-            />
-          </AppStack.Navigator>
-        </NavigationContainer>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <BottomSheetModalProvider>
+            <NavigationContainer>
+              <AppStack.Navigator>
+                <AppStack.Screen
+                  name="Login"
+                  component={LoginComponent}
+                  options={{headerShown: false}}
+                />
+                <AppStack.Screen
+                  name="Signup"
+                  component={SignupComponent}
+                  options={{headerShown: false}}
+                />
+                <AppStack.Screen
+                  name="Home"
+                  component={HomeComponent}
+                  options={{headerShown: false}}
+                />
+              </AppStack.Navigator>
+            </NavigationContainer>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </PersistGate>
     </Provider>
   );

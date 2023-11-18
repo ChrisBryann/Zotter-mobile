@@ -1,7 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {ChartBarIcon, MapIcon} from 'react-native-heroicons/solid';
-import {CourseSearchResult} from '../../../../store/types';
+import {CourseItem, CourseSearchResult} from '../../../../store/types';
+import CourseSearchResultCardActionButton from '../../../UI/CourseSearchResultCardActionButton';
+import {useDispatch} from 'react-redux';
+import {
+  addCurrentCourseAppointment,
+  deleteCurrentCourseAppointment,
+} from '../../../../store/Schedule/ScheduleSlice';
 
 type CourseSearchResultCardProps = {
   item: CourseSearchResult;
@@ -10,14 +16,13 @@ type CourseSearchResultCardProps = {
 const CourseSearchResultCardComponent = ({
   item,
 }: CourseSearchResultCardProps) => {
-  const [isAdded, setIsAdded] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   return (
     <View className="flex rounded-lg shadow-md rounded-lg shadow-md m-2">
       <Text className="text-2xl font-bold px-3">
         {item.deptCode} {item.courseNumber} - {item.courseTitle}
       </Text>
-      {/* this is for lec example */}
       {item.sections.map((section, idx) => {
         const {
           sectionCode,
@@ -26,7 +31,7 @@ const CourseSearchResultCardComponent = ({
           units,
           instructors,
           meetings: [{days, time: Time, bldg: Location}],
-          finalExam,
+          //finalExam,
           maxCapacity,
           numCurrentlyEnrolled: {totalEnrolled},
           numOnWaitlist,
@@ -137,23 +142,31 @@ const CourseSearchResultCardComponent = ({
                   </TouchableOpacity>
                 </View>
               </View>
-              {!isAdded ? (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIsAdded(true);
-                  }}
-                  className="self-end mr-2 p-2 rounded-full bg-blue-600">
-                  <Text className="text-yellow-400 font-bold">Add</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIsAdded(false);
-                  }}
-                  className="self-end mr-2 p-2 rounded-full bg-red-600">
-                  <Text className="text-white font-bold">Remove</Text>
-                </TouchableOpacity>
-              )}
+              <CourseSearchResultCardActionButton
+                id={`${item.deptCode} ${item.courseNumber}-${sectionNum}`}
+                onAddCourse={() =>
+                  dispatch(
+                    addCurrentCourseAppointment({
+                      id: `${item.deptCode} ${item.courseNumber}-${sectionNum}`,
+                      days,
+                      time: Time,
+                      location: Location,
+                      title: `${item.deptCode} ${item.courseNumber}`,
+                      description: item.courseTitle,
+                      type: sectionType,
+                      section: sectionNum,
+                      code: sectionCode,
+                    } as CourseItem),
+                  )
+                }
+                onRemoveCourse={() =>
+                  dispatch(
+                    deleteCurrentCourseAppointment(
+                      `${item.deptCode} ${item.courseNumber}-${sectionNum}`,
+                    ),
+                  )
+                }
+              />
             </View>
           </View>
         );

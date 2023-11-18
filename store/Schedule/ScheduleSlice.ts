@@ -13,7 +13,7 @@ import {TimelineEventProps} from 'react-native-calendars';
 
 const initialState: ScheduleState = {
   currentSchedule: {
-    id: '',
+    id: '', // q: id by default should be random
     title: '',
     courses: [],
     appointments: [],
@@ -35,45 +35,50 @@ export const scheduleSlice = createSlice({
       const [startHours, startMinutes, endHours, endMinutes] = formatTime(
         data.time,
       );
-
-      if (data.days.trim() in COMBINED_DAYS) {
-        let count = 0;
-        for (const day of COMBINED_DAYS[data.days.trim()]) {
-          const date = setToDate(new Date(), DAYS[day]);
+      // if they don't have a specific time, then don't make an appointment (q: should we create a separate tab for TBA?)
+      if (data.time.trim() !== 'TBA') {
+        if (data.days.trim() in COMBINED_DAYS) {
+          let count = 0;
+          for (const day of COMBINED_DAYS[data.days.trim()]) {
+            const date = setToDate(new Date(), DAYS[day]);
+            const newStartDate = new Date(date);
+            newStartDate.setHours(startHours);
+            newStartDate.setMinutes(startMinutes);
+            console.log(newStartDate.toString);
+            
+            const start = moment(newStartDate).format('YYYY-MM-DD HH:mm:00');
+            const newEndDate = new Date(date);
+            newEndDate.setHours(endHours);
+            newEndDate.setMinutes(endMinutes);
+            const end = moment(newEndDate).format('YYYY-MM-DD HH:mm:00');
+            appointments.push({
+              title: `${data.title} ${data.section} - ${data.type}`,
+              id: `${data.id}@${count++}`,
+              start,
+              end,
+              summary: data.location,
+            });
+          }
+        } else {
+          const date = setToDate(new Date(), DAYS[data.days.trim()]);
           const newStartDate = new Date(date);
-          const start = `${moment(newStartDate).format(
-            TIME_FORMAT,
-          )} ${startHours}:${startMinutes}:00`;
+          newStartDate.setHours(startHours);
+          newStartDate.setMinutes(startMinutes);
+          const start = moment(newStartDate).format('YYYY-MM-DD HH:mm:00');
           const newEndDate = new Date(date);
-          const end = `${moment(newEndDate).format(
-            TIME_FORMAT,
-          )} ${endHours}:${endMinutes}:00`;
+          newEndDate.setHours(endHours);
+          newEndDate.setMinutes(endMinutes);
+          const end = moment(newEndDate).format('YYYY-MM-DD HH:mm:00');
           appointments.push({
             title: `${data.title} ${data.section} - ${data.type}`,
-            id: `${data.title}-${data.section}@${count++}`,
+            id: data.id,
             start,
             end,
             summary: data.location,
           });
         }
-      } else {
-        const date = setToDate(new Date(), DAYS[data.days.trim()]);
-        const newStartDate = new Date(date);
-        const start = `${moment(newStartDate).format(
-          TIME_FORMAT,
-        )} ${startHours}:${startMinutes}:00`;
-        const newEndDate = new Date(date);
-        const end = `${moment(newEndDate).format(
-          TIME_FORMAT,
-        )} ${endHours}:${endMinutes}:00`;
-        appointments.push({
-          title: `${data.title} ${data.section} - ${data.type}`,
-          id: `${data.title}-${data.section}`,
-          start,
-          end,
-          summary: data.location,
-        });
       }
+
       return {
         ...state,
         currentSchedule: {

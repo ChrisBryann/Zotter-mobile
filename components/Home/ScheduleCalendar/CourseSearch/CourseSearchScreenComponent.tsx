@@ -13,9 +13,10 @@ import CourseSearchResultComponent from './CourseSearchResultComponent';
 const CourseSearchScreen =
   createNativeStackNavigator<CourseSearchScreenParamsList>();
 
-const CourseSearchScreenComponent = ({
-  navigation,
-}: NativeStackScreenProps<ScheduleScreenParamsList, 'CourseSearch'>) => {
+const CourseSearchScreenComponent = ({}: NativeStackScreenProps<
+  ScheduleScreenParamsList,
+  'CourseSearch'
+>) => {
   return (
     <CourseSearchScreen.Navigator initialRouteName="CourseSearchForm">
       <CourseSearchScreen.Screen

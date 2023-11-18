@@ -6,6 +6,7 @@ export type CourseItem = {
   time: string;
   location: string;
   title: string;
+  description: string; // what is COMPSCI 121? it's information retrieval
   type: 'Lec' | 'Dis' | 'Lab' | 'Sem' | string;
   section: string;
   code: string; // course code
