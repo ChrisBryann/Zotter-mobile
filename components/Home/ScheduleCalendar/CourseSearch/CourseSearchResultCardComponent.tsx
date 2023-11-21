@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {MapIcon, PresentationChartBarIcon} from 'react-native-heroicons/solid';
 import {CourseItem, CourseSearchResult} from '../../../../store/types';
@@ -179,4 +179,4 @@ const CourseSearchResultCardComponent = ({
   );
 };
 
-export default CourseSearchResultCardComponent;
+export default memo(CourseSearchResultCardComponent);

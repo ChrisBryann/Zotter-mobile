@@ -7,7 +7,13 @@ import {ArrowLeftIcon} from 'react-native-heroicons/outline';
 import CourseSearchResultCardComponent from './CourseSearchResultCardComponent';
 import FlatListItemSeparator from '../../../UI/FlatListItemSeparator';
 import {CourseSearchResult} from '../../../../store/types';
-import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+} from '@gorhom/bottom-sheet';
 
 const CourseSearchResultComponent = ({
   route,
@@ -28,15 +34,42 @@ const CourseSearchResultComponent = ({
   const handleSheetChange = useCallback((index: number) => {
     console.log('handleSheetChange', index);
   }, []);
-  const handleSnapPress = useCallback((index: number) => {
-    classStatisticsRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    classStatisticsRef.current?.close();
-  }, []);
+  // const handleSnapPress = useCallback((index: number) => {
+  //   classStatisticsRef.current?.snapToIndex(index);
+  // }, []);
+  // const handleClosePress = useCallback(() => {
+  //   classStatisticsRef.current?.close();
+  // }, []);
   const handleExpandPress = useCallback(() => {
     classStatisticsRef.current?.present();
   }, []);
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    [],
+  );
+
+  const renderItems = useCallback(
+    ({item, index}: {item: CourseSearchResult; index: number}) => (
+      <CourseSearchResultCardComponent
+        showStatistics={(name: string) => {
+          setSelectedClass(name);
+          handleExpandPress();
+        }}
+        key={index}
+        item={item}
+      />
+    ),
+    [handleExpandPress],
+  );
   return (
     <View style={{paddingTop: insets.top}} className="flex-1 bg-white pt-2">
       <View className="flex flex-row items-center justify-evenly my-2 px-2 w-screen top-0">
@@ -46,7 +79,6 @@ const CourseSearchResultComponent = ({
           }}>
           <ArrowLeftIcon />
         </TouchableOpacity>
-
         <TextInput
           placeholder="Search"
           value={searchCourse}
@@ -70,41 +102,25 @@ const CourseSearchResultComponent = ({
         data={courses}
         className="w-screen"
         showsVerticalScrollIndicator={false}
-        renderItem={({item, index}) => (
-          <CourseSearchResultCardComponent
-            showStatistics={(name: string) => {
-              setSelectedClass(name);
-              handleExpandPress();
-            }}
-            key={index}
-            item={item}
-          />
-        )}
+        renderItem={renderItems}
         ItemSeparatorComponent={FlatListItemSeparator}
         keyExtractor={(item, index) => index.toString()}
+        initialNumToRender={5}
+        maxToRenderPerBatch={3}
       />
-      <BottomSheetModal
-        ref={classStatisticsRef}
-        onChange={handleSheetChange}
-        enablePanDownToClose
-        enableDynamicSizing
-        style={{
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 8,
-          },
-          shadowOpacity: 0.44,
-          shadowRadius: 10.32,
-
-          elevation: 16,
-        }}>
-        <BottomSheetScrollView>
-          <View>
-            <Text>{selectedClass}</Text>
-          </View>
-        </BottomSheetScrollView>
-      </BottomSheetModal>
+      <BottomSheetModalProvider>
+        <BottomSheetModal
+          ref={classStatisticsRef}
+          onChange={handleSheetChange}
+          backdropComponent={renderBackdrop}
+          enablePanDownToClose
+          enableDynamicSizing
+          enableDismissOnClose>
+          <BottomSheetView>
+            <Text>{selectedClass} nice</Text>
+          </BottomSheetView>
+        </BottomSheetModal>
+      </BottomSheetModalProvider>
     </View>
   );
 };

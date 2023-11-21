@@ -11,9 +11,10 @@ import CourseSearchScreenComponent from './CourseSearch/CourseSearchScreenCompon
 
 const ScheduleScreen = createNativeStackNavigator<ScheduleScreenParamsList>();
 
-const ScheduleScreenComponent = ({
-  navigation,
-}: BottomTabScreenProps<HomeTabParamsList, 'ScheduleScreen'>) => {
+const ScheduleScreenComponent = ({}: BottomTabScreenProps<
+  HomeTabParamsList,
+  'ScheduleScreen'
+>) => {
   return (
     <ScheduleScreen.Navigator initialRouteName="ScheduleCalendar">
       <ScheduleScreen.Screen

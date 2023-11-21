@@ -1,12 +1,11 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Modal, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../screens.types';
 
 import {NoSymbolIcon} from 'react-native-heroicons/outline';
 import {
   CalendarProvider,
   ExpandableCalendar,
-  TimelineEventProps,
   TimelineList,
   TimelineListProps,
   TimelineProps,
@@ -17,9 +16,7 @@ import {
   AcademicCapIcon,
   BookmarkSquareIcon,
   ChartBarIcon,
-  MagnifyingGlassPlusIcon,
   MapIcon,
-  PlusCircleIcon,
   ShoppingBagIcon,
 } from 'react-native-heroicons/solid';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -31,7 +28,12 @@ import {
   selectCurrent,
   updateCurrentSchedule,
 } from '../../../store/Schedule/ScheduleSlice';
-import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 import {CourseItem} from '../../../store/types';
 import CourseSearchResultCardActionButton from '../../UI/CourseSearchResultCardActionButton';
 /*export interface Event {
@@ -60,15 +62,28 @@ const ScheduleCalendarComponent = ({
   const handleSheetChange = useCallback((index: number) => {
     console.log('handleSheetChange', index);
   }, []);
-  const handleSnapPress = useCallback((index: number) => {
-    courseSheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    courseSheetRef.current?.close();
-  }, []);
+  // const handleSnapPress = useCallback((index: number) => {
+  //   courseSheetRef.current?.snapToIndex(index);
+  // }, []);
+  // const handleClosePress = useCallback(() => {
+  //   courseSheetRef.current?.close();
+  // }, []);
   const handleExpandPress = useCallback(() => {
     courseSheetRef.current?.present();
   }, []);
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    [],
+  );
 
   const [scheduleName, setScheduleName] = useState<string>('');
 
@@ -218,19 +233,10 @@ const ScheduleCalendarComponent = ({
         ref={courseSheetRef}
         index={0}
         onChange={handleSheetChange}
+        backdropComponent={renderBackdrop}
         enablePanDownToClose
         enableDynamicSizing
-        style={{
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 8,
-          },
-          shadowOpacity: 0.44,
-          shadowRadius: 10.32,
-
-          elevation: 16,
-        }}>
+        enableDismissOnClose>
         <BottomSheetScrollView>
           <View className="flex m-2">
             <Text className="text-2xl font-bold px-3">

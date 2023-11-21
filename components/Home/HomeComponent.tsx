@@ -16,13 +16,13 @@ import {
 } from 'react-native-heroicons/outline';
 import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
-import {Text} from 'react-native';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamsList>();
 
-const HomeComponent = ({
-  navigation,
-}: NativeStackScreenProps<AppStackParamsList, 'Home'>) => {
+const HomeComponent = ({}: NativeStackScreenProps<
+  AppStackParamsList,
+  'Home'
+>) => {
   return (
     <HomeTab.Navigator
       screenOptions={({
