@@ -19,13 +19,13 @@ const CourseSearchResultCardActionButton = ({
   return !isAdded ? (
     <TouchableOpacity
       onPress={onAddCourse}
-      className="self-end mr-2 p-2 rounded-full bg-blue-600">
-      <Text className="text-yellow-400 font-bold">Add</Text>
+      className=" p-2 rounded-full bg-blue-600">
+      <Text className="text-white font-bold">Add</Text>
     </TouchableOpacity>
   ) : (
     <TouchableOpacity
       onPress={onRemoveCourse}
-      className="self-end mr-2 p-2 rounded-full bg-red-600">
+      className="p-2 rounded-full bg-red-600">
       <Text className="text-white font-bold">Remove</Text>
     </TouchableOpacity>
   );

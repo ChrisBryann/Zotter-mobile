@@ -5,6 +5,7 @@ import {CourseSearchResult} from './store/types';
 export type AppStackParamsList = {
   Login: undefined;
   Signup: undefined;
+  Welcome: undefined;
   Home: BottomTabScreenProps<HomeTabParamsList>;
 };
 

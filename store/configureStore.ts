@@ -11,7 +11,6 @@ import {
   persistStore,
 } from 'redux-persist';
 import ScheduleReducer from './Schedule/ScheduleSlice';
-import ClassesReducer from './Classes/ClassesSlice';
 
 const persistConfig = {
   key: 'root',
@@ -21,7 +20,6 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   schedule: ScheduleReducer,
-  classes: ClassesReducer,
 });
 
 const persistedRootReducer = persistReducer(persistConfig, rootReducer);

@@ -36,11 +36,13 @@ export const formatTime = (time: string) => {
 };
 
 export const DAYS = {
+  Sun: 0,
   M: 1,
   Tu: 2,
   W: 3,
   Th: 4,
   F: 5,
+  Sat: 1,
 };
 
 export const COMBINED_DAYS = {

@@ -45,7 +45,7 @@ export const scheduleSlice = createSlice({
             newStartDate.setHours(startHours);
             newStartDate.setMinutes(startMinutes);
             console.log(newStartDate.toString);
-            
+
             const start = moment(newStartDate).format('YYYY-MM-DD HH:mm:00');
             const newEndDate = new Date(date);
             newEndDate.setHours(endHours);
@@ -163,8 +163,49 @@ export const scheduleSlice = createSlice({
         added: [...state.added, state.currentSchedule],
       };
     },
-    updateCourseSchedule: (state, action: PayloadAction<string>) => {
-      // update current schedule metadata in the added list (?) --> might not be needed
+    updateCurrentSchedule: state => {
+      // update current schedule metadata / start and end dates
+      const startOfWeek = moment()
+        .startOf('week')
+        .add(1, 'days')
+        .format(`${TIME_FORMAT} HH:mm:00`);
+      const endOfWeek = moment().endOf('week');
+      return {
+        ...state,
+        currentSchedule: {
+          ...state.currentSchedule,
+          appointments: state.currentSchedule.appointments.map(schedule => {
+            const oldStart = moment(schedule.start);
+            const oldEnd = moment(schedule.start);
+            if (
+              oldStart.isBetween(startOfWeek, endOfWeek, 'days', '[]') ||
+              oldEnd.isBetween(startOfWeek, endOfWeek, 'days', '[]')
+            ) {
+              return schedule;
+            }
+
+            const currentStart = moment()
+              .startOf('week')
+              .add(moment(schedule.start).day(), 'days');
+            const currentEnd = moment()
+              .startOf('week')
+              .add(moment(schedule.start).day(), 'days');
+            const startDiff = currentStart.diff(oldStart, 'days');
+            const endDiff = currentEnd.diff(oldEnd, 'days');
+            const newStart = oldStart
+              .add(startDiff, 'days')
+              .format(`${TIME_FORMAT} HH:mm:00`);
+            const newEnd = oldEnd
+              .add(endDiff, 'days')
+              .format(`${TIME_FORMAT} HH:mm:00`);
+            return {
+              ...schedule,
+              start: newStart,
+              end: newEnd,
+            };
+          }),
+        },
+      };
     },
     deleteCourseSchedule: (state, action: PayloadAction<string>) => {
       // delete a new/current schedule to the added list
@@ -182,7 +223,7 @@ export const {
   setCurrentSchedule,
   clearCurrentSchedule,
   saveCurrentSchedule,
-  updateCourseSchedule,
+  updateCurrentSchedule,
   deleteCourseSchedule,
 } = scheduleSlice.actions;
 

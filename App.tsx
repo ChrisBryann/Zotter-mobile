@@ -10,6 +10,8 @@ import {persistor, store} from './store/configureStore';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {SelectProvider} from '@mobile-reality/react-native-select-pro';
+import WelcomeComponent from './components/Welcome/WelcomeComponent';
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
 const App = () => {
@@ -18,25 +20,32 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{flex: 1}}>
           <BottomSheetModalProvider>
-            <NavigationContainer>
-              <AppStack.Navigator>
-                <AppStack.Screen
-                  name="Login"
-                  component={LoginComponent}
-                  options={{headerShown: false}}
-                />
-                <AppStack.Screen
-                  name="Signup"
-                  component={SignupComponent}
-                  options={{headerShown: false}}
-                />
-                <AppStack.Screen
-                  name="Home"
-                  component={HomeComponent}
-                  options={{headerShown: false}}
-                />
-              </AppStack.Navigator>
-            </NavigationContainer>
+            <SelectProvider>
+              <NavigationContainer>
+                <AppStack.Navigator initialRouteName="Welcome">
+                  <AppStack.Screen
+                    name="Welcome"
+                    component={WelcomeComponent}
+                    options={{headerShown: false}}
+                  />
+                  <AppStack.Screen
+                    name="Login"
+                    component={LoginComponent}
+                    options={{headerShown: false}}
+                  />
+                  <AppStack.Screen
+                    name="Signup"
+                    component={SignupComponent}
+                    options={{headerShown: false}}
+                  />
+                  <AppStack.Screen
+                    name="Home"
+                    component={HomeComponent}
+                    options={{headerShown: false}}
+                  />
+                </AppStack.Navigator>
+              </NavigationContainer>
+            </SelectProvider>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </PersistGate>

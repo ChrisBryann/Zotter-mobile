@@ -12,7 +12,7 @@ type ScheduleListCardProps = {
 
 const ScheduleListCardComponent = ({item}: ScheduleListCardProps) => {
   return (
-    <View className="flex flex-row justify-between my-2 px-2 py-2 rounded-lg mx-2 border border-gray-300 bg-gray-100 shadow-sm">
+    <View className="flex flex-row justify-between my-2 px-2 py-2 rounded-lg mx-2 bg-blue-100">
       <View>
         <View className="flex-row gap-x-2 items-center">
           <Text className="text-xl font-bold text-gray-900">Winter 2023</Text>

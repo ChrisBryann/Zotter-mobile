@@ -29,6 +29,7 @@ import {
   addCurrentCourseAppointment,
   deleteCurrentCourseAppointment,
   selectCurrent,
+  updateCurrentSchedule,
 } from '../../../store/Schedule/ScheduleSlice';
 import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {CourseItem} from '../../../store/types';
@@ -109,7 +110,7 @@ const ScheduleCalendarComponent = ({
 
   useEffect(() => {
     console.log(courseSchedule);
-
+    // fix dates of appointments if we're in a different week --> infinite loop
     setEventsByDate(
       courseSchedule.appointments.reduce(
         (obj: any, item) => ({
@@ -125,6 +126,16 @@ const ScheduleCalendarComponent = ({
     );
   }, [courseSchedule]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('focused!');
+
+      dispatch(updateCurrentSchedule());
+    });
+
+    return unsubscribe;
+  });
+
   return (
     <View
       style={{
@@ -139,6 +150,9 @@ const ScheduleCalendarComponent = ({
         <ExpandableCalendar
           firstDay={1}
           disableWeekScroll={true}
+          style={{
+            shadowRadius: 0,
+          }}
           theme={{
             selectedDayBackgroundColor: '#1D4ED8',
             todayTextColor: 'black',
@@ -184,7 +198,7 @@ const ScheduleCalendarComponent = ({
           initialTime={INITIAL_TIME} // initial time must always be on the Monday for this to work
         />
       </CalendarProvider>
-      <View className="flex flex-row items-center justify-around p-2 rounded-t-2xl">
+      <View className="flex flex-row items-center justify-around p-2 rounded-t-2xl bg-blue-900">
         <TouchableOpacity className="bg-gray-500 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
           <Text className="text-white text-lg font-semibold">Clear</Text>
           <NoSymbolIcon color={'white'} />
@@ -218,7 +232,7 @@ const ScheduleCalendarComponent = ({
           elevation: 16,
         }}>
         <BottomSheetScrollView>
-          <View className="flex rounded-lg shadow-md rounded-lg shadow-md m-2">
+          <View className="flex m-2">
             <Text className="text-2xl font-bold px-3">
               {selectedCourse.title} {selectedCourse.description}
             </Text>

@@ -2,7 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {CourseSearchResult} from '../../../../store/types';
 
@@ -12,6 +18,8 @@ const CourseSearchFormComponent = ({
   CourseSearchScreenParamsList,
   'CourseSearchForm'
 >) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [term, setTerm] = useState<{value: string; key: string}[]>([]);
   const [selectedTerm, setSelectedTerm] = useState<string>('');
 
@@ -22,8 +30,10 @@ const CourseSearchFormComponent = ({
   const [selectedDept, setSelectedDept] = useState<string>('');
 
   useEffect(() => {
+    const controller = new AbortController();
     const getFormInfo = async () => {
       // set loading here
+      setIsLoading(true);
       await fetch('https://zotter-4e7fd16e0ef2.herokuapp.com/get-form-info')
         .then(async data => {
           const res = await data.json();
@@ -52,20 +62,20 @@ const CourseSearchFormComponent = ({
         })
         .catch(err => {
           console.log(err.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     };
     getFormInfo();
+
+    return () => {
+      controller.abort(); // cancel the fetch request
+    };
   }, []);
 
   const onSubmitHandler = () => {
-    console.log(
-      'https://api.peterportal.org/rest/v0/schedule/soc?' +
-        new URLSearchParams({
-          term: selectedTerm,
-          department: selectedDept,
-          ge: selectedGE,
-        }),
-    );
+    setIsLoading(true);
     fetch(
       'https://api.peterportal.org/rest/v0/schedule/soc?' +
         new URLSearchParams({
@@ -87,6 +97,9 @@ const CourseSearchFormComponent = ({
       })
       .catch(err => {
         console.log(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   return (
@@ -128,9 +141,13 @@ const CourseSearchFormComponent = ({
       <TouchableOpacity
         onPress={onSubmitHandler}
         className="w-10/12 bg-blue-600 p-2 rounded-lg mx-auto my-4">
-        <Text className="text-center text-lg text-white font-semibold">
-          Search
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator size="small" color={'white'} />
+        ) : (
+          <Text className="text-center text-lg text-white font-semibold">
+            Search
+          </Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );
