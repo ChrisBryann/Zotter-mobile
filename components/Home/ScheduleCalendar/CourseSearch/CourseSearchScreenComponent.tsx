@@ -18,18 +18,20 @@ const CourseSearchScreenComponent = ({}: NativeStackScreenProps<
   'CourseSearch'
 >) => {
   return (
-    <CourseSearchScreen.Navigator initialRouteName="CourseSearchForm">
-      <CourseSearchScreen.Screen
-        name="CourseSearchForm"
-        component={CourseSearchFormComponent}
-        options={{headerShown: false}}
-      />
-      <CourseSearchScreen.Screen
-        name="CourseSearchResult"
-        component={CourseSearchResultComponent}
-        options={{headerShown: false, presentation: 'fullScreenModal'}}
-      />
-    </CourseSearchScreen.Navigator>
+    <>
+      <CourseSearchScreen.Navigator initialRouteName="CourseSearchForm">
+        <CourseSearchScreen.Screen
+          name="CourseSearchForm"
+          component={CourseSearchFormComponent}
+          options={{headerShown: false}}
+        />
+        <CourseSearchScreen.Screen
+          name="CourseSearchResult"
+          component={CourseSearchResultComponent}
+          options={{headerShown: false, presentation: 'fullScreenModal'}}
+        />
+      </CourseSearchScreen.Navigator>
+    </>
   );
 };
 

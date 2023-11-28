@@ -1,6 +1,10 @@
 import React, {memo} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {MapIcon, PresentationChartBarIcon} from 'react-native-heroicons/solid';
+import {
+  ChartBarSquareIcon,
+  MapIcon,
+  PresentationChartBarIcon,
+} from 'react-native-heroicons/solid';
 import {CourseItem, CourseSearchResult} from '../../../../store/types';
 import CourseSearchResultCardActionButton from '../../../UI/CourseSearchResultCardActionButton';
 import {useDispatch} from 'react-redux';
@@ -8,6 +12,8 @@ import {
   addCurrentCourseAppointment,
   deleteCurrentCourseAppointment,
 } from '../../../../store/Schedule/ScheduleSlice';
+import {toast} from '@baronha/ting';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 type CourseSearchResultCardProps = {
   item: CourseSearchResult;
@@ -22,9 +28,20 @@ const CourseSearchResultCardComponent = ({
 
   return (
     <View className="flex m-2">
-      <Text className="text-2xl font-bold px-3">
-        {item.deptCode} {item.courseNumber} - {item.courseTitle}
-      </Text>
+      <View className="flex-row justify-between items-center px-3">
+        <Text className="text-2xl font-bold w-2/3">
+          {item.deptCode} {item.courseNumber} - {item.courseTitle}
+        </Text>
+        <TouchableOpacity
+          className="flex-row items-center bg-blue-600 gap-x-1 rounded-md p-1"
+          onPress={() => {
+            showStatistics(`${item.deptCode} ${item.courseNumber}`);
+          }}>
+          <ChartBarSquareIcon color={'white'} />
+          <Text className="font-semibold text-white mr-1">Zotistics</Text>
+        </TouchableOpacity>
+      </View>
+
       {item.sections.map((section, idx) => {
         const {
           sectionCode,
@@ -129,21 +146,24 @@ const CourseSearchResultCardComponent = ({
                   </Text>
                 </View>
               </View>
-              <View className="flex flex-row gap-x-2">
+              {/* <View className="flex flex-row gap-x-2">
                 <TouchableOpacity>
                   <MapIcon color={'#1D4ED8'} />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    showStatistics(`${item.deptCode} ${item.courseNumber}`);
-                  }}>
-                  <PresentationChartBarIcon color={'#1D4ED8'} />
-                </TouchableOpacity>
-              </View>
+              </View> */}
             </View>
 
             <View className="flex flex-row justify-between">
-              <TouchableOpacity className="bg-blue-600 p-2 rounded-full">
+              <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(sectionCode);
+                  toast({
+                    title: 'Code Copied!',
+                    backgroundColor: '#f3f4f6',
+                    titleColor: '#1D4ED8',
+                  });
+                }}
+                className="bg-blue-800 p-2 rounded-full">
                 <Text className="text-white font-semibold">{sectionCode}</Text>
               </TouchableOpacity>
               <CourseSearchResultCardActionButton

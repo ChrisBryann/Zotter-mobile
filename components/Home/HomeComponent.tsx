@@ -16,6 +16,7 @@ import {
 } from 'react-native-heroicons/outline';
 import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
+import Toast from 'react-native-toast-message';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamsList>();
 

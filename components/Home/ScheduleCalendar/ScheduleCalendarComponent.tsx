@@ -144,7 +144,12 @@ const ScheduleCalendarComponent = ({
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('focused!');
-
+      // check if this is a new week if it is then reset the schedule date
+      if (moment(currentDate) < moment().startOf('week').add(1, 'days')) {
+        setCurrentDate(
+          moment().startOf('week').add(1, 'days').format(TIME_FORMAT),
+        );
+      }
       dispatch(updateCurrentSchedule());
     });
 

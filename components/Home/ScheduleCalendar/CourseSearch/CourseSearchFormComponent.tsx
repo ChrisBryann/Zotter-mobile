@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
 import {CourseSearchResult} from '../../../../store/types';
+import Config from 'react-native-config';
+import {toast} from '@baronha/ting';
+import DropdownSelect from 'react-native-input-select';
 
 const CourseSearchFormComponent = ({
   navigation,
@@ -19,48 +21,55 @@ const CourseSearchFormComponent = ({
   'CourseSearchForm'
 >) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSearchLoading, setIsSearchLoading] = useState<boolean>(false);
 
-  const [term, setTerm] = useState<{value: string; key: string}[]>([]);
+  const [term, setTerm] = useState<{value: string; label: string}[]>([]);
   const [selectedTerm, setSelectedTerm] = useState<string>('');
 
-  const [GE, setGE] = useState<{value: string; key: string}[]>([]);
+  const [GE, setGE] = useState<{value: string; label: string}[]>([]);
   const [selectedGE, setSelectedGE] = useState<string>('');
 
-  const [dept, setDept] = useState<{value: string; key: string}[]>([]);
+  const [dept, setDept] = useState<{value: string; label: string}[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>('');
 
   useEffect(() => {
     const controller = new AbortController();
-    const getFormInfo = async () => {
+    const getFormInfo = () => {
       // set loading here
       setIsLoading(true);
-      await fetch('https://zotter-4e7fd16e0ef2.herokuapp.com/get-form-info')
+      fetch(`${Config.BACKEND_API_URL}/get-form-info`)
         .then(async data => {
           const res = await data.json();
 
           setTerm(
             res.terms.map((t: string) => ({
-              key: t,
+              label: t,
               value: t,
             })),
           );
           setSelectedTerm(res.terms[0] as string);
           setDept(
             res.departments.map((d: {type: string; value: string}) => ({
-              key: d.type,
-              value: d.value,
+              value: d.type,
+              label: d.value,
             })),
           );
           setSelectedDept(res.departments[0].type as string);
           setGE(
             res.genEducation.map((g: {type: string; value: string}) => ({
-              key: g.type,
-              value: g.value,
+              value: g.type,
+              label: g.value,
             })),
           );
           setSelectedGE(res.genEducation[0].type as string);
         })
         .catch(err => {
+          toast({
+            title: 'Error displaying UCI classes!',
+            message: 'Check your connection and try again.',
+            preset: 'error',
+            titleColor: '#CC3333',
+          });
           console.log(err.message);
         })
         .finally(() => {
@@ -75,7 +84,7 @@ const CourseSearchFormComponent = ({
   }, []);
 
   const onSubmitHandler = () => {
-    setIsLoading(true);
+    setIsSearchLoading(true);
     fetch(
       'https://api.peterportal.org/rest/v0/schedule/soc?' +
         new URLSearchParams({
@@ -92,63 +101,84 @@ const CourseSearchFormComponent = ({
           navigation.navigate('CourseSearchResult', {coursesData});
         } else {
           // indicates that no classes are found with those criteria
+          toast({
+            title: 'No classes available!',
+            preset: 'error',
+            titleColor: '#CC3333',
+          });
           console.log('no classes!');
         }
       })
       .catch(err => {
+        toast({
+          title: 'No classes available!',
+          preset: 'error',
+          titleColor: '#CC3333',
+        });
         console.log(err.message);
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsSearchLoading(false);
       });
   };
   return (
-    <SafeAreaView className="flex-1 bg-white h-full">
-      <Text className="p-4 pt-0 text-4xl text-center font-bold">
-        Search Classes
-      </Text>
-      <ScrollView>
-        <View className="flex items-center gap-6">
-          <View className="w-10/12 gap-y-2">
-            <Text className="text-lg font-semibold">Term</Text>
-            <SelectList
-              defaultOption={term[0]}
-              data={term}
-              setSelected={setSelectedTerm}
-              save="key"
-            />
-          </View>
-          <View className="w-10/12">
-            <Text className="text-lg font-semibold">General Education</Text>
-            <SelectList
-              defaultOption={GE[0]}
-              data={GE}
-              setSelected={setSelectedGE}
-              save="key"
-            />
-          </View>
-          <View className="w-10/12">
-            <Text className="text-lg font-semibold">Department</Text>
-            <SelectList
-              defaultOption={dept[0]}
-              data={dept}
-              setSelected={setSelectedDept}
-              save="key"
-            />
-          </View>
+    <SafeAreaView className="flex-1 bg-white">
+      {isLoading ? (
+        <View className="h-full flex justify-center items-center">
+          <ActivityIndicator size={'large'} />
         </View>
-      </ScrollView>
-      <TouchableOpacity
-        onPress={onSubmitHandler}
-        className="w-10/12 bg-blue-600 p-2 rounded-lg mx-auto my-4">
-        {isLoading ? (
-          <ActivityIndicator size="small" color={'white'} />
-        ) : (
-          <Text className="text-center text-lg text-white font-semibold">
-            Search
+      ) : (
+        <View className="h-full">
+          <Text className="p-4 pt-0 text-4xl text-center font-bold">
+            Search Classes
           </Text>
-        )}
-      </TouchableOpacity>
+          <ScrollView>
+            <View className="flex items-center">
+              <View className="w-10/12">
+                <Text className="text-lg font-semibold">Term</Text>
+                <DropdownSelect
+                  placeholder={term[0]?.label ?? ''}
+                  options={term}
+                  selectedValue={selectedTerm}
+                  onValueChange={setSelectedTerm}
+                  isSearchable={true}
+                />
+              </View>
+              <View className="w-10/12">
+                <Text className="text-lg font-semibold">General Education</Text>
+                <DropdownSelect
+                  placeholder={GE[0]?.label ?? ''}
+                  options={GE}
+                  selectedValue={selectedGE}
+                  onValueChange={setSelectedGE}
+                  isSearchable={true}
+                />
+              </View>
+              <View className="w-10/12">
+                <Text className="text-lg font-semibold">Department</Text>
+                <DropdownSelect
+                  placeholder={dept[0]?.label ?? ''}
+                  options={dept}
+                  selectedValue={selectedDept}
+                  onValueChange={setSelectedDept}
+                  isSearchable={true}
+                />
+              </View>
+            </View>
+          </ScrollView>
+          <TouchableOpacity
+            onPress={onSubmitHandler}
+            className="w-10/12 bg-blue-600 p-2 rounded-lg mx-auto my-4">
+            {isSearchLoading ? (
+              <ActivityIndicator size={'small'} />
+            ) : (
+              <Text className="text-center text-lg text-white font-semibold">
+                Search
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

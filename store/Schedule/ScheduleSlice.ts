@@ -10,6 +10,8 @@ import {
 } from '../../utils/utils';
 import moment from 'moment';
 import {TimelineEventProps} from 'react-native-calendars';
+import 'react-native-get-random-values';
+import {v4 as uuid} from 'uuid';
 
 const initialState: ScheduleState = {
   currentSchedule: {
@@ -133,26 +135,13 @@ export const scheduleSlice = createSlice({
     },
     saveCurrentSchedule: state => {
       // save the current schedule info
-      // check if current schedule exists in the added list, if it is replace it
+      // if no courses is added in current scehdule or this is a newly cleared/made schedule, don't add it to added list
       if (
-        state.added.some(schedule => schedule.id === state.currentSchedule.id)
+        state.currentSchedule.modified === null ||
+        state.currentSchedule.courses.length === 0
       ) {
-        return {
-          currentSchedule: {
-            id: '',
-            title: '',
-            courses: [],
-            appointments: [],
-          },
-          added: [
-            ...state.added.filter(
-              schedule => schedule.id !== state.currentSchedule.id,
-            ),
-            state.currentSchedule,
-          ],
-        };
+        return state;
       }
-      // else just append it to the added list
       return {
         currentSchedule: {
           id: '',
@@ -160,7 +149,13 @@ export const scheduleSlice = createSlice({
           courses: [],
           appointments: [],
         },
-        added: [...state.added, state.currentSchedule],
+        added: [
+          ...state.added,
+          {
+            ...state.currentSchedule,
+            id: uuid(),
+          },
+        ],
       };
     },
     updateCurrentSchedule: state => {
@@ -176,7 +171,7 @@ export const scheduleSlice = createSlice({
           ...state.currentSchedule,
           appointments: state.currentSchedule.appointments.map(schedule => {
             const oldStart = moment(schedule.start);
-            const oldEnd = moment(schedule.start);
+            const oldEnd = moment(schedule.end);
             if (
               oldStart.isBetween(startOfWeek, endOfWeek, 'days', '[]') ||
               oldEnd.isBetween(startOfWeek, endOfWeek, 'days', '[]')
@@ -189,9 +184,9 @@ export const scheduleSlice = createSlice({
               .add(moment(schedule.start).day(), 'days');
             const currentEnd = moment()
               .startOf('week')
-              .add(moment(schedule.start).day(), 'days');
-            const startDiff = currentStart.diff(oldStart, 'days');
-            const endDiff = currentEnd.diff(oldEnd, 'days');
+              .add(moment(schedule.end).day(), 'days');
+            const startDiff = currentStart.diff(oldStart, 'days') + 1; // adding one can give offset error
+            const endDiff = currentEnd.diff(oldEnd, 'days') + 1;
             const newStart = oldStart
               .add(startDiff, 'days')
               .format(`${TIME_FORMAT} HH:mm:00`);
