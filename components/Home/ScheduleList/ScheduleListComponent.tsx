@@ -1,14 +1,16 @@
-import React, {useCallback, useMemo} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {Text, View} from 'react-native';
 import {HomeTabParamsList} from '../../../screens.types';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import ScheduleListCardComponent from './ScheduleListCardComponent';
-import FlatListItemSeparator from '../../UI/FlatListItemSeparator';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useAppSelector} from '../../../store/hooks';
-import {selectAdded} from '../../../store/Schedule/ScheduleSlice';
-import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {
+  deleteCourseSchedule,
+  selectAdded,
+  setCurrentSchedule,
+} from '../../../store/Schedule/ScheduleSlice';
 import MasonryList from '@react-native-seoul/masonry-list';
 import {CourseSchedule} from '../../../store/types';
 import {
@@ -20,12 +22,21 @@ import {
   ScaleIcon,
   VariableIcon,
 } from 'react-native-heroicons/solid';
+import {useDispatch} from 'react-redux';
+import {toast} from '@baronha/ting';
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 
 const ScheduleListComponent = ({
   navigation,
 }: BottomTabScreenProps<HomeTabParamsList, 'ScheduleList'>) => {
   const insets = useSafeAreaInsets();
   const addedSchedules = useAppSelector(selectAdded);
+  const dispatch = useDispatch();
 
   const randomIcons = useMemo(
     () => [
@@ -40,6 +51,53 @@ const ScheduleListComponent = ({
     [],
   );
 
+  // bottom sheet modal
+  const scheduleRef = useRef<BottomSheetModal>(null);
+  const [selectedSchedule, setSelectedSchedule] = useState<CourseSchedule>({});
+
+  // callbacks
+  const handleSheetChange = useCallback((index: number) => {
+    console.log('handleSheetChange', index);
+  }, []);
+  const handleExpandPress = useCallback(() => {
+    scheduleRef.current?.present();
+  }, []);
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        {...props}
+        pressBehavior="close"
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    [],
+  );
+
+  const showSchedule = (id: string) => {
+    // set the current schedule displayed with the wanted schedule, toast success message and redirect to schedule screen
+    dispatch(setCurrentSchedule(id));
+    scheduleRef.current?.dismiss();
+    toast({
+      title: 'Schedule loaded!',
+      backgroundColor: '#f3f4f6',
+      titleColor: '#22C55E',
+    });
+    navigation.navigate('ScheduleScreen');
+  };
+
+  const deleteSchedule = () => {
+    dispatch(deleteCourseSchedule(selectedSchedule.id));
+    scheduleRef.current?.dismiss();
+    toast({
+      title: 'Schedule deleted!',
+      backgroundColor: '#f3f4f6',
+      titleColor: '#22C55E',
+    });
+  };
+
   const renderItems = useCallback(
     ({item, i: index}: {item: unknown; i: number}) => (
       <ScheduleListCardComponent
@@ -47,10 +105,15 @@ const ScheduleListComponent = ({
         item={item as CourseSchedule}
         Icon={randomIcons[Math.floor(Math.random() * randomIcons.length)]}
         hasLeftMargin={index % 2 === 0 ? false : true}
+        onDisplay={handleExpandPress}
+        onSetSchedule={(schedule: CourseSchedule) => {
+          setSelectedSchedule(schedule);
+        }}
       />
     ),
-    [randomIcons],
+    [randomIcons, handleExpandPress],
   );
+
   return (
     <View className="flex-1 bg-white">
       <View
@@ -74,8 +137,8 @@ const ScheduleListComponent = ({
           numColumns={2}
         />
       </View>
-      {/* <BottomSheetModal
-        ref={courseSheetRef}
+      <BottomSheetModal
+        ref={scheduleRef}
         index={0}
         onChange={handleSheetChange}
         backdropComponent={renderBackdrop}
@@ -85,79 +148,42 @@ const ScheduleListComponent = ({
         <BottomSheetScrollView>
           <View className="flex m-2">
             <Text className="text-2xl font-bold px-3">
-              {selectedCourse.title} {selectedCourse.description}
+              {selectedSchedule.title}
             </Text>
-            <View className="flex flex-row items-start justify-between p-3">
-              <View className="w-1/3">
-                <TouchableOpacity className="bg-blue-600 p-2 rounded-full mr-auto">
-                  <Text className="text-white font-semibold">
-                    {selectedCourse.code}
+            <View className="flex gap-y-2 p-3">
+              <View className="flex flex-row">
+                <Text className="font-semibold">Total Courses: </Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedSchedule.courses?.length || 0}
+                </Text>
+              </View>
+              <View className="flex flex-row">
+                <Text className="font-semibold">Last modified on: </Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedSchedule.modified}
+                </Text>
+              </View>
+
+              <View className="flex flex-row justify-around">
+                <TouchableOpacity onPress={deleteSchedule} className="p-2">
+                  <Text className="text-red-600 underline font-semibold">
+                    Delete
                   </Text>
                 </TouchableOpacity>
-                <View className="mt-0.5">
-                  <Text className="text-gray-700 font-semibold">
-                    Location:{' '}
-                    <Text className="text-blue-600">
-                      {selectedCourse.location}
-                    </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    showSchedule(selectedSchedule.id);
+                  }}
+                  className="p-2">
+                  <Text className="text-blue-600 underline font-semibold">
+                    Load
                   </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Time: {selectedCourse.time}
-                  </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Day(s): {selectedCourse.days}
-                  </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Section: {selectedCourse.section}
-                  </Text>
-                </View>
-              </View>
-              <View className="h-[150px] justify-between">
-                <View className="flex items-end">
-                  <View className="flex flex-row items-center gap-x-2">
-                    <View
-                      className={`${
-                        selectedCourse.type === 'Lec'
-                          ? 'bg-gray-300'
-                          : selectedCourse.type === 'Dis'
-                          ? 'bg-violet-300'
-                          : 'bg-orange-300'
-                      } p-2 rounded-full`}>
-                      <Text
-                        className={`${
-                          selectedCourse.type === 'Lec'
-                            ? 'text-black'
-                            : selectedCourse.type === 'Dis'
-                            ? 'text-violet-600'
-                            : 'text-orange-600'
-                        } font-semibold`}>
-                        {selectedCourse.type}
-                      </Text>
-                    </View>
-                  </View>
-                  <View className="pt-2 pr-2 flex flex-row items-center gap-x-2">
-                    <TouchableOpacity>
-                      <MapIcon color={'#1D4ED8'} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <ChartBarIcon color={'#1D4ED8'} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <CourseSearchResultCardActionButton
-                  id={selectedCourse.id}
-                  onAddCourse={() =>
-                    dispatch(addCurrentCourseAppointment(selectedCourse))
-                  }
-                  onRemoveCourse={() =>
-                    dispatch(deleteCurrentCourseAppointment(selectedCourse.id))
-                  }
-                />
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         </BottomSheetScrollView>
-      </BottomSheetModal> */}
+      </BottomSheetModal>
     </View>
   );
 };

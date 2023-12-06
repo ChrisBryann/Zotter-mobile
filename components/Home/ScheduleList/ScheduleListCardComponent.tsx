@@ -1,22 +1,21 @@
 import React, {useMemo} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {
-  InformationCircleIcon,
-  PencilIcon,
-  TrashIcon,
-} from 'react-native-heroicons/outline';
+import {Text, TouchableOpacity} from 'react-native';
 import {CourseSchedule} from '../../../store/types';
 
 type ScheduleListCardProps = {
   item: CourseSchedule;
   Icon: any;
   hasLeftMargin: boolean;
+  onDisplay: () => void;
+  onSetSchedule: (schedule: CourseSchedule) => void;
 };
 
 const ScheduleListCardComponent = ({
   item,
   Icon,
   hasLeftMargin,
+  onDisplay,
+  onSetSchedule,
 }: ScheduleListCardProps) => {
   const randomBool = useMemo(() => Math.random() < 0.5, []);
 
@@ -52,6 +51,10 @@ const ScheduleListCardComponent = ({
       } mb-2 flex-1 justify-center items-center bg-${
         randomBool ? 'blue-700' : 'gray-300'
       } rounded-xl shadow-md`}
+      onPress={() => {
+        onSetSchedule(item);
+        onDisplay();
+      }}
       style={{height: randomBool ? 150 : 210}}>
       <Icon
         color={randomBool ? 'white' : 'black'}

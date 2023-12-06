@@ -66,12 +66,6 @@ const ScheduleCalendarComponent = ({
   const handleSheetChange = useCallback((index: number) => {
     console.log('handleSheetChange', index);
   }, []);
-  // const handleSnapPress = useCallback((index: number) => {
-  //   courseSheetRef.current?.snapToIndex(index);
-  // }, []);
-  // const handleClosePress = useCallback(() => {
-  //   courseSheetRef.current?.close();
-  // }, []);
   const handleExpandPress = useCallback(() => {
     courseSheetRef.current?.present();
   }, []);
