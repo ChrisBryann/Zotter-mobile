@@ -1,10 +1,6 @@
 import React, {memo} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {
-  ChartBarSquareIcon,
-  MapIcon,
-  PresentationChartBarIcon,
-} from 'react-native-heroicons/solid';
+import {ChartBarSquareIcon} from 'react-native-heroicons/solid';
 import {CourseItem, CourseSearchResult} from '../../../../store/types';
 import CourseSearchResultCardActionButton from '../../../UI/CourseSearchResultCardActionButton';
 import {useDispatch} from 'react-redux';

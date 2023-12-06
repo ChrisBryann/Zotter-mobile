@@ -24,7 +24,9 @@ import {TIME_FORMAT} from '../../../utils/utils';
 import {useAppDispatch, useAppSelector} from '../../../store/hooks';
 import {
   addCurrentCourseAppointment,
+  clearCurrentSchedule,
   deleteCurrentCourseAppointment,
+  saveCurrentSchedule,
   selectCurrent,
   updateCurrentSchedule,
 } from '../../../store/Schedule/ScheduleSlice';
@@ -36,6 +38,8 @@ import {
 } from '@gorhom/bottom-sheet';
 import {CourseItem} from '../../../store/types';
 import CourseSearchResultCardActionButton from '../../UI/CourseSearchResultCardActionButton';
+import {alert, toast} from '@baronha/ting';
+import Clipboard from '@react-native-clipboard/clipboard';
 /*export interface Event {
     id?: string;
     start: string;
@@ -196,12 +200,20 @@ const ScheduleCalendarComponent = ({
             return (
               <TouchableOpacity
                 onPress={
-                  direction === 'right' &&
-                  (() => {
-                    navigation.navigate('CourseCart');
-                  })
+                  direction === 'right'
+                    ? () => {
+                        navigation.navigate('CourseCart');
+                      }
+                    : () => {}
                 }>
                 {direction === 'right' && <ShoppingBagIcon color={'#1D4ED8'} />}
+                {direction === 'right' && courseSchedule.courses.length > 0 && (
+                  <View className="absolute flex justify-center items-center w-6 h-6 bg-red-500 border-2 border-white rounded-full -top-2.5 -right-2.5">
+                    <Text className="text-xs text-white font-bold">
+                      {courseSchedule.courses.length}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             );
           }}
@@ -219,7 +231,15 @@ const ScheduleCalendarComponent = ({
         />
       </CalendarProvider>
       <View className="flex flex-row items-center justify-around p-2 rounded-t-2xl bg-blue-900">
-        <TouchableOpacity className="bg-gray-500 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(clearCurrentSchedule());
+            toast({
+              title: 'Schedule cleared!',
+              titleColor: '#000000',
+            });
+          }}
+          className="bg-gray-500 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
           <Text className="text-white text-lg font-semibold">Clear</Text>
           <NoSymbolIcon color={'white'} />
         </TouchableOpacity>
@@ -229,7 +249,32 @@ const ScheduleCalendarComponent = ({
           <Text className="text-white text-lg font-semibold">Find Class</Text>
           <AcademicCapIcon color={'white'} />
         </TouchableOpacity>
-        <TouchableOpacity className="bg-blue-600 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
+        <TouchableOpacity
+          onPress={() => {
+            if (!scheduleName) {
+              alert({
+                preset: 'error',
+                title: 'Please enter a schedule title!',
+                titleColor: '#CC3333',
+              });
+              return;
+            }
+            if (courseSchedule.courses.length === 0) {
+              alert({
+                preset: 'error',
+                title: 'Please add a course!',
+                titleColor: '#CC3333',
+              });
+              return;
+            }
+            dispatch(saveCurrentSchedule(scheduleName));
+            toast({
+              title: 'Schedule saved!',
+              titleColor: '#22C55E',
+            });
+            setScheduleName('');
+          }}
+          className="bg-blue-600 p-2 rounded-lg flex flex-row items-center gap-x-2 shadow-md">
           <Text className="text-white text-lg font-semibold">Save</Text>
           <BookmarkSquareIcon color={'white'} />
         </TouchableOpacity>
@@ -247,66 +292,75 @@ const ScheduleCalendarComponent = ({
             <Text className="text-2xl font-bold px-3">
               {selectedCourse.title} {selectedCourse.description}
             </Text>
-            <View className="flex flex-row items-start justify-between p-3">
-              <View className="w-1/3">
-                {/* <Text className="text-lg font-bold">
-                {item.deptCode} {item.courseNumber}
-              </Text> */}
-                <TouchableOpacity className="bg-blue-600 p-2 rounded-full mr-auto">
+            <View className="flex gap-y-2 p-3">
+              <View className="flex flex-row justify-between">
+                <Text className="font-semibold">Location:</Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedCourse.location}
+                </Text>
+              </View>
+              <View className="flex flex-row justify-between">
+                <Text className="font-semibold">Time:</Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedCourse.time}
+                </Text>
+              </View>
+              <View className="flex flex-row justify-between">
+                <Text className="font-semibold">Days:</Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedCourse.days}
+                </Text>
+              </View>
+              <View className="flex flex-row justify-between">
+                <Text className="font-semibold">Section:</Text>
+                <Text className="text-blue-600 font-semibold">
+                  {selectedCourse.section}
+                </Text>
+              </View>
+              <View className="flex flex-row justify-between items-center">
+                <View className="flex flex-row gap-x-2">
+                  <View
+                    className={`${
+                      selectedCourse.type === 'Lec'
+                        ? 'bg-gray-300'
+                        : selectedCourse.type === 'Dis'
+                        ? 'bg-violet-300'
+                        : 'bg-orange-300'
+                    } p-2 rounded-full`}>
+                    <Text
+                      className={`${
+                        selectedCourse.type === 'Lec'
+                          ? 'text-black'
+                          : selectedCourse.type === 'Dis'
+                          ? 'text-violet-600'
+                          : 'text-orange-600'
+                      } font-semibold`}>
+                      {selectedCourse.type}
+                    </Text>
+                  </View>
+                </View>
+                {/* <View className="flex flex-row gap-x-2">
+                <TouchableOpacity>
+                  <MapIcon color={'#1D4ED8'} />
+                </TouchableOpacity>
+              </View> */}
+              </View>
+
+              <View className="flex flex-row justify-between">
+                <TouchableOpacity
+                  onPress={() => {
+                    Clipboard.setString(selectedCourse.code);
+                    toast({
+                      title: 'Code Copied!',
+                      backgroundColor: '#f3f4f6',
+                      titleColor: '#1D4ED8',
+                    });
+                  }}
+                  className="bg-blue-800 p-2 rounded-full">
                   <Text className="text-white font-semibold">
                     {selectedCourse.code}
                   </Text>
                 </TouchableOpacity>
-                <View className="mt-0.5">
-                  <Text className="text-gray-700 font-semibold">
-                    Location:{' '}
-                    <Text className="text-blue-600">
-                      {selectedCourse.location}
-                    </Text>
-                  </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Time: {selectedCourse.time}
-                  </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Day(s): {selectedCourse.days}
-                  </Text>
-                  <Text className="text-gray-700 font-semibold">
-                    Section: {selectedCourse.section}
-                  </Text>
-                </View>
-              </View>
-              <View className="h-[150px] justify-between">
-                <View className="flex items-end">
-                  <View className="flex flex-row items-center gap-x-2">
-                    <View
-                      className={`${
-                        selectedCourse.type === 'Lec'
-                          ? 'bg-gray-300'
-                          : selectedCourse.type === 'Dis'
-                          ? 'bg-violet-300'
-                          : 'bg-orange-300'
-                      } p-2 rounded-full`}>
-                      <Text
-                        className={`${
-                          selectedCourse.type === 'Lec'
-                            ? 'text-black'
-                            : selectedCourse.type === 'Dis'
-                            ? 'text-violet-600'
-                            : 'text-orange-600'
-                        } font-semibold`}>
-                        {selectedCourse.type}
-                      </Text>
-                    </View>
-                  </View>
-                  <View className="pt-2 pr-2 flex flex-row items-center gap-x-2">
-                    <TouchableOpacity>
-                      <MapIcon color={'#1D4ED8'} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      <ChartBarIcon color={'#1D4ED8'} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
                 <CourseSearchResultCardActionButton
                   id={selectedCourse.id}
                   onAddCourse={() =>

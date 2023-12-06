@@ -1,9 +1,8 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
-  ActivityIndicator,
   Dimensions,
   FlatList,
   Text,
@@ -99,8 +98,8 @@ const CourseSearchResultComponent = ({
       fetch(
         `${Config.BACKEND_API_URL}/get-class-statistic?` +
           new URLSearchParams({
-            department: selectedClass.split(' ')[0],
-            number: selectedClass.split(' ')[1],
+            department: name.split(' ')[0],
+            number: name.split(' ')[1],
           }),
       )
         .then(async data => {
@@ -115,7 +114,7 @@ const CourseSearchResultComponent = ({
           setIsLoading(false);
         });
     },
-    [handleExpandPress, selectedClass],
+    [handleExpandPress],
   );
 
   const renderItems = useCallback(

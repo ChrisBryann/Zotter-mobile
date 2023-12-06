@@ -133,7 +133,7 @@ export const scheduleSlice = createSlice({
         },
       };
     },
-    saveCurrentSchedule: state => {
+    saveCurrentSchedule: (state, action: PayloadAction<string>) => {
       // save the current schedule info
       // if no courses is added in current scehdule or this is a newly cleared/made schedule, don't add it to added list
       if (
@@ -154,6 +154,8 @@ export const scheduleSlice = createSlice({
           {
             ...state.currentSchedule,
             id: uuid(),
+            title: action.payload,
+            modified: moment().format('MM/DD/yyyy'),
           },
         ],
       };

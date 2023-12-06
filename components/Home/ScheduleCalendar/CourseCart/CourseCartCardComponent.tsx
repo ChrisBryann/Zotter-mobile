@@ -2,6 +2,8 @@ import React from 'react';
 import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import {TrashIcon} from 'react-native-heroicons/outline';
 import {CourseItem} from '../../../../store/types';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { toast } from '@baronha/ting';
 
 type CourseCartCardProps = {
   item: CourseItem;
@@ -26,7 +28,15 @@ const CourseCartCardComponent = ({item, onRemove}: CourseCartCardProps) => {
         </View>
       </View>
       <View className="flex items-center gap-3">
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            Clipboard.setString(item.code);
+            toast({
+              title: 'Code Copied!',
+              backgroundColor: '#f3f4f6',
+              titleColor: '#1D4ED8',
+            });
+          }}>
           <Text className="text-blue-600 font-semibold">{item.code}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onRemove}>

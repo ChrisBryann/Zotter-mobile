@@ -16,7 +16,6 @@ import {
 } from 'react-native-heroicons/outline';
 import ScheduleListComponent from './ScheduleList/ScheduleListComponent';
 import ScheduleScreenComponent from './ScheduleCalendar/ScheduleScreenComponent';
-import Toast from 'react-native-toast-message';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamsList>();
 
@@ -86,11 +85,11 @@ const HomeComponent = ({}: NativeStackScreenProps<
         component={ScheduleListComponent}
         options={{headerShown: false}}
       />
-      <HomeTab.Screen
+      {/* <HomeTab.Screen
         name="Account"
         component={AccountComponent}
         options={{headerShown: false}}
-      />
+      /> */}
     </HomeTab.Navigator>
   );
 };
