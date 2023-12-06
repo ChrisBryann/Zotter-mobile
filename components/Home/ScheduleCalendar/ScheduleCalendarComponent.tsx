@@ -102,7 +102,7 @@ const ScheduleCalendarComponent = ({
     format24h: true,
     onEventPress: event => {
       const currentCourse = courseSchedule.courses.find(
-        course => course.id === event.id?.split('@')[0],
+        (course: CourseItem) => course.id === event.id?.split('@')[0],
       )!; //id is always set, so don't worry
       console.log(currentCourse);
 

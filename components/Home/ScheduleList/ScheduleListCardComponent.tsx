@@ -4,7 +4,7 @@ import {CourseSchedule} from '../../../store/types';
 
 type ScheduleListCardProps = {
   item: CourseSchedule;
-  Icon: any;
+  // Icon: any;
   hasLeftMargin: boolean;
   onDisplay: () => void;
   onSetSchedule: (schedule: CourseSchedule) => void;
@@ -12,7 +12,6 @@ type ScheduleListCardProps = {
 
 const ScheduleListCardComponent = ({
   item,
-  Icon,
   hasLeftMargin,
   onDisplay,
   onSetSchedule,
@@ -56,11 +55,11 @@ const ScheduleListCardComponent = ({
         onDisplay();
       }}
       style={{height: randomBool ? 150 : 210}}>
-      <Icon
+      {/* <Icon
         color={randomBool ? 'white' : 'black'}
         size={42}
         className="m-1 grow"
-      />
+      /> */}
       <Text
         className={`font-bold text-center text-xl p-2 ${
           randomBool && 'text-white'

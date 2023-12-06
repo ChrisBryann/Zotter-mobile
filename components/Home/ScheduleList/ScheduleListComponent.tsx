@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
 import {HomeTabParamsList} from '../../../screens.types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
@@ -103,7 +103,7 @@ const ScheduleListComponent = ({
       <ScheduleListCardComponent
         key={index}
         item={item as CourseSchedule}
-        Icon={randomIcons[Math.floor(Math.random() * randomIcons.length)]}
+        // Icon={randomIcons[Math.floor(Math.random() * randomIcons.length)]}
         hasLeftMargin={index % 2 === 0 ? false : true}
         onDisplay={handleExpandPress}
         onSetSchedule={(schedule: CourseSchedule) => {
@@ -111,7 +111,7 @@ const ScheduleListComponent = ({
         }}
       />
     ),
-    [randomIcons, handleExpandPress],
+    [handleExpandPress],
   );
 
   return (
@@ -128,62 +128,75 @@ const ScheduleListComponent = ({
           <Text className="underline font-bold">Create</Text>
         </TouchableOpacity>
       </View>
-      <View className="flex-1 items-center px-2">
-        <MasonryList
-          className="w-screen"
-          data={addedSchedules}
-          renderItem={renderItems}
-          keyExtractor={item => item.id}
-          numColumns={2}
-        />
-      </View>
-      <BottomSheetModal
-        ref={scheduleRef}
-        index={0}
-        onChange={handleSheetChange}
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose
-        enableDynamicSizing
-        enableDismissOnClose>
-        <BottomSheetScrollView>
-          <View className="flex m-2">
-            <Text className="text-2xl font-bold px-3">
-              {selectedSchedule.title}
-            </Text>
-            <View className="flex gap-y-2 p-3">
-              <View className="flex flex-row">
-                <Text className="font-semibold">Total Courses: </Text>
-                <Text className="text-blue-600 font-semibold">
-                  {selectedSchedule.courses?.length || 0}
-                </Text>
-              </View>
-              <View className="flex flex-row">
-                <Text className="font-semibold">Last modified on: </Text>
-                <Text className="text-blue-600 font-semibold">
-                  {selectedSchedule.modified}
-                </Text>
-              </View>
-
-              <View className="flex flex-row justify-around">
-                <TouchableOpacity onPress={deleteSchedule} className="p-2">
-                  <Text className="text-red-600 underline font-semibold">
-                    Delete
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    showSchedule(selectedSchedule.id);
-                  }}
-                  className="p-2">
-                  <Text className="text-blue-600 underline font-semibold">
-                    Load
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+      {!addedSchedules.length ? (
+        <View className="flex items-center justify-start my-auto">
+          <Image
+            source={require('../../../assets/images/empty_schedule.png')}
+            className="w-full h-4/5"
+            resizeMode="contain"
+          />
+          <Text className="font-semibold text-lg">No schedule found!</Text>
+        </View>
+      ) : (
+        <>
+          <View className="flex-1 items-center px-2">
+            <MasonryList
+              className="w-screen"
+              data={addedSchedules}
+              renderItem={renderItems}
+              keyExtractor={item => item.id}
+              numColumns={2}
+            />
           </View>
-        </BottomSheetScrollView>
-      </BottomSheetModal>
+          <BottomSheetModal
+            ref={scheduleRef}
+            index={0}
+            onChange={handleSheetChange}
+            backdropComponent={renderBackdrop}
+            enablePanDownToClose
+            enableDynamicSizing
+            enableDismissOnClose>
+            <BottomSheetScrollView>
+              <View className="flex m-2">
+                <Text className="text-2xl font-bold px-3">
+                  {selectedSchedule.title}
+                </Text>
+                <View className="flex gap-y-2 p-3">
+                  <View className="flex flex-row">
+                    <Text className="font-semibold">Total Courses: </Text>
+                    <Text className="text-blue-600 font-semibold">
+                      {selectedSchedule.courses?.length || 0}
+                    </Text>
+                  </View>
+                  <View className="flex flex-row">
+                    <Text className="font-semibold">Last modified on: </Text>
+                    <Text className="text-blue-600 font-semibold">
+                      {selectedSchedule.modified}
+                    </Text>
+                  </View>
+
+                  <View className="flex flex-row justify-around">
+                    <TouchableOpacity onPress={deleteSchedule} className="p-2">
+                      <Text className="text-red-600 underline font-semibold">
+                        Delete
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        showSchedule(selectedSchedule.id);
+                      }}
+                      className="p-2">
+                      <Text className="text-blue-600 underline font-semibold">
+                        Load
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </BottomSheetScrollView>
+          </BottomSheetModal>
+        </>
+      )}
     </View>
   );
 };

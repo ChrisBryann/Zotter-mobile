@@ -170,7 +170,7 @@ const CourseSearchFormComponent = ({
             onPress={onSubmitHandler}
             className="w-10/12 bg-blue-600 p-2 rounded-lg mx-auto my-4">
             {isSearchLoading ? (
-              <ActivityIndicator size={'small'} />
+              <ActivityIndicator size={'small'} color={'white'} />
             ) : (
               <Text className="text-center text-lg text-white font-semibold">
                 Search
