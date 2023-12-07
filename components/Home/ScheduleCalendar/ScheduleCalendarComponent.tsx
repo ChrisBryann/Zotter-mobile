@@ -181,10 +181,11 @@ const ScheduleCalendarComponent = ({
             return (
               <TouchableOpacity>
                 <TextInput
-                  className="text-lg font-semibold py-2 text-center"
+                  className="text-lg placeholder-grey-300 font-semibold py-2 text-center"
                   onChangeText={setScheduleName}
                   value={scheduleName}
                   placeholder="Schedule Title"
+                  placeholderTextColor={'lightgrey'}
                 />
               </TouchableOpacity>
             );
@@ -230,6 +231,7 @@ const ScheduleCalendarComponent = ({
             dispatch(clearCurrentSchedule());
             toast({
               title: 'Schedule cleared!',
+              backgroundColor: '#f3f4f6',
               titleColor: '#000000',
             });
           }}
@@ -264,6 +266,7 @@ const ScheduleCalendarComponent = ({
             dispatch(saveCurrentSchedule(scheduleName));
             toast({
               title: 'Schedule saved!',
+              backgroundColor: '#f3f4f6',
               titleColor: '#22C55E',
             });
             setScheduleName('');

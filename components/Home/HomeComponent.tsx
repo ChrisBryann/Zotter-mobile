@@ -72,7 +72,7 @@ const HomeComponent = ({}: NativeStackScreenProps<
           marginVertical: 5,
           marginHorizontal: 20,
         },
-        tabBarActiveBackgroundColor: '#DBEAFE',
+        // tabBarActiveBackgroundColor: '#DBEAFE',
       })}
       initialRouteName="ScheduleList">
       <HomeTab.Screen

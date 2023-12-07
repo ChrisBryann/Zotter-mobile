@@ -68,6 +68,7 @@ const CourseSearchFormComponent = ({
             title: 'Error displaying UCI classes!',
             message: 'Check your connection and try again.',
             preset: 'error',
+            backgroundColor: '#f3f4f6',
             titleColor: '#CC3333',
           });
           console.log(err.message);
@@ -104,6 +105,7 @@ const CourseSearchFormComponent = ({
           toast({
             title: 'No classes available!',
             preset: 'error',
+            backgroundColor: '#f3f4f6',
             titleColor: '#CC3333',
           });
           console.log('no classes!');
@@ -113,6 +115,7 @@ const CourseSearchFormComponent = ({
         toast({
           title: 'No classes available!',
           preset: 'error',
+          backgroundColor: '#f3f4f6',
           titleColor: '#CC3333',
         });
         console.log(err.message);

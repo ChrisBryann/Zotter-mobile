@@ -157,7 +157,7 @@ const ScheduleListComponent = ({
             enableDynamicSizing
             enableDismissOnClose>
             <BottomSheetScrollView>
-              <View className="flex m-2">
+              <View className="flex m-2 py-2">
                 <Text className="text-2xl font-bold px-3">
                   {selectedSchedule.title}
                 </Text>
