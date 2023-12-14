@@ -142,6 +142,28 @@ export const scheduleSlice = createSlice({
       ) {
         return state;
       }
+      if (
+        state.added.some(schedule => schedule.id === state.currentSchedule.id)
+      ) {
+        return {
+          currentSchedule: {
+            id: '',
+            title: '',
+            courses: [],
+            appointments: [],
+          },
+          added: [
+            ...state.added.filter(
+              schedule => schedule.id !== state.currentSchedule.id,
+            ),
+            {
+              ...state.currentSchedule,
+              title: action.payload,
+              modified: moment().format('MM/DD/yyyy'),
+            },
+          ],
+        };
+      }
       return {
         currentSchedule: {
           id: '',

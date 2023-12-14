@@ -163,7 +163,9 @@ const ScheduleListComponent = ({
                 </Text>
                 <View className="flex gap-y-2 p-3">
                   <View className="flex flex-row">
-                    <Text className="font-semibold">Total Courses: </Text>
+                    <Text className="font-semibold text-center">
+                      Total Courses:{' '}
+                    </Text>
                     <Text className="text-blue-600 font-semibold">
                       {selectedSchedule.courses?.length || 0}
                     </Text>
@@ -175,8 +177,10 @@ const ScheduleListComponent = ({
                     </Text>
                   </View>
 
-                  <View className="flex flex-row justify-around">
-                    <TouchableOpacity onPress={deleteSchedule} className="p-2">
+                  <View className="flex flex-row justify-around py-2">
+                    <TouchableOpacity
+                      onPress={deleteSchedule}
+                      className="p-2 rounded-lg">
                       <Text className="text-red-600 underline font-semibold">
                         Delete
                       </Text>
@@ -185,7 +189,7 @@ const ScheduleListComponent = ({
                       onPress={() => {
                         showSchedule(selectedSchedule.id);
                       }}
-                      className="p-2">
+                      className="p-2 rounded-lg">
                       <Text className="text-blue-600 underline font-semibold">
                         Load
                       </Text>

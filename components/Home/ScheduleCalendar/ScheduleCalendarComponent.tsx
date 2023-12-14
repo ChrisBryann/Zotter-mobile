@@ -38,7 +38,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import {CourseItem} from '../../../store/types';
 import CourseSearchResultCardActionButton from '../../UI/CourseSearchResultCardActionButton';
-import {alert, toast} from '@baronha/ting';
+import {toast} from '@baronha/ting';
 import Clipboard from '@react-native-clipboard/clipboard';
 /*export interface Event {
     id?: string;
@@ -124,6 +124,7 @@ const ScheduleCalendarComponent = ({
   useEffect(() => {
     console.log(courseSchedule);
     // fix dates of appointments if we're in a different week --> infinite loop
+    setScheduleName(courseSchedule.title);
     setEventsByDate(
       courseSchedule.appointments.reduce(
         (obj: any, item) => ({
@@ -168,9 +169,9 @@ const ScheduleCalendarComponent = ({
         <ExpandableCalendar
           firstDay={1}
           disableWeekScroll={true}
-          style={{
-            shadowRadius: 0,
-          }}
+          // style={{
+          //   shadowRadius: 0,
+          // }}
           theme={{
             selectedDayBackgroundColor: '#1D4ED8',
             todayTextColor: 'black',
@@ -248,7 +249,7 @@ const ScheduleCalendarComponent = ({
         <TouchableOpacity
           onPress={() => {
             if (!scheduleName) {
-              alert({
+              toast({
                 preset: 'error',
                 title: 'Please enter a schedule title!',
                 titleColor: '#CC3333',
@@ -256,7 +257,7 @@ const ScheduleCalendarComponent = ({
               return;
             }
             if (courseSchedule.courses.length === 0) {
-              alert({
+              toast({
                 preset: 'error',
                 title: 'Please add a course!',
                 titleColor: '#CC3333',

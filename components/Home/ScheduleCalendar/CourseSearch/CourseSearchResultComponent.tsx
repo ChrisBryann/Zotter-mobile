@@ -3,6 +3,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {CourseSearchScreenParamsList} from '../../../../screens.types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Text,
@@ -23,6 +24,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import {BarChart} from 'react-native-chart-kit';
 import Config from 'react-native-config';
+import {Image} from 'react-native';
 const CourseSearchResultComponent = ({
   route,
   navigation,
@@ -36,6 +38,7 @@ const CourseSearchResultComponent = ({
   const insets = useSafeAreaInsets();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const classStatisticsRef = useRef<BottomSheetModal>(null);
   const [selectedClass, setSelectedClass] = useState<string>('');
@@ -89,6 +92,7 @@ const CourseSearchResultComponent = ({
 
   const showStatistics = useCallback(
     (name: string) => {
+      handleExpandPress();
       setSelectedClass(name);
 
       // set loading
@@ -103,12 +107,16 @@ const CourseSearchResultComponent = ({
           }),
       )
         .then(async data => {
-          const {status, ...res} = await data.json();
+          const res = await data.json();
+          if (!res.ok) {
+            setIsError(true);
+          }
+
           setSelectedClassStatistic(res);
-          handleExpandPress();
         })
         .catch(err => {
           console.log(err);
+          setIsError(true);
         })
         .finally(() => {
           setIsLoading(false);
@@ -181,38 +189,56 @@ const CourseSearchResultComponent = ({
           ref={classStatisticsRef}
           onChange={handleSheetChange}
           backdropComponent={renderBackdrop}
-          enableDynamicSizing
+          snapPoints={['50%']}
           enablePanDownToClose
           enableDismissOnClose>
           <BottomSheetView>
-            <View className="flex items-center justify-center">
-              <Text className="font-semibold">
-                {selectedClass} | GPA: {selectedClassStatistic.averageGPA}
-              </Text>
-              <BarChart
-                style={{}}
-                data={barData}
-                width={Dimensions.get('window').width - 10}
-                height={270}
-                yAxisLabel=""
-                yAxisSuffix=""
-                chartConfig={{
-                  backgroundGradientFrom: '#FFFF',
-                  backgroundGradientTo: '#FFFF',
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(30, 64, 175, ${opacity})`,
-                  labelColor: (opacity = 1) => `rgba(30, 64, 175, ${opacity})`,
-                  barPercentage: 0.65,
-                  propsForLabels: {
-                    fontWeight: 'bold',
-                  },
-                  propsForVerticalLabels: {
-                    fontSize: 15,
-                    rotation: 0,
-                  },
-                }}
-                verticalLabelRotation={30}
-              />
+            <View className="flex justify-center items-center h-full">
+              {isLoading ? (
+                <ActivityIndicator color={'black'} size={'large'} />
+              ) : isError ? (
+                <>
+                  <Image
+                    source={require('../../../../assets/images/empty_schedule.png')}
+                    className="w-full h-4/5"
+                    resizeMode="contain"
+                  />
+                  <Text className="font-semibold text-lg">
+                    No statistic is found!
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text className="font-semibold">
+                    {selectedClass} | GPA: {selectedClassStatistic.averageGPA}
+                  </Text>
+                  <BarChart
+                    style={{}}
+                    data={barData}
+                    width={Dimensions.get('window').width - 10}
+                    height={270}
+                    yAxisLabel=""
+                    yAxisSuffix=""
+                    chartConfig={{
+                      backgroundGradientFrom: '#FFFF',
+                      backgroundGradientTo: '#FFFF',
+                      decimalPlaces: 0,
+                      color: (opacity = 1) => `rgba(30, 64, 175, ${opacity})`,
+                      labelColor: (opacity = 1) =>
+                        `rgba(30, 64, 175, ${opacity})`,
+                      barPercentage: 0.65,
+                      propsForLabels: {
+                        fontWeight: 'bold',
+                      },
+                      propsForVerticalLabels: {
+                        fontSize: 15,
+                        rotation: 0,
+                      },
+                    }}
+                    verticalLabelRotation={30}
+                  />
+                </>
+              )}
             </View>
           </BottomSheetView>
         </BottomSheetModal>

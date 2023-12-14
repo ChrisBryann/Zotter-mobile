@@ -24,6 +24,8 @@ const App = () => {
       if (res === null) {
         setIsLoading(true);
         await AsyncStorage.setItem('userOnboarded', 'true');
+      } else {
+        setIsLoading(false);
       }
     });
   };
