@@ -35,7 +35,9 @@ export const formatTime = (time: string) => {
   return [startHours, startMinutes, endHours, endMinutes];
 };
 
-export const DAYS = {
+export const DAYS: {
+  [key: string]: number;
+} = {
   Sun: 0,
   M: 1,
   Tu: 2,
@@ -45,7 +47,9 @@ export const DAYS = {
   Sat: 1,
 };
 
-export const COMBINED_DAYS = {
+export const COMBINED_DAYS: {
+  [key: string]: string[];
+} = {
   MW: ['M', 'W'],
   MWF: ['M', 'W', 'F'],
   TuTh: ['Tu', 'Th'],

@@ -30,7 +30,7 @@ const ScheduleScreenComponent = ({}: BottomTabScreenProps<
       <ScheduleScreen.Screen
         name="CourseSearch"
         component={CourseSearchScreenComponent}
-        options={{presentation: 'modal', headerShown: false}}
+        options={{headerBackTitle: 'Back', headerTitle: ''}}
       />
     </ScheduleScreen.Navigator>
   );

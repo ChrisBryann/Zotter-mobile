@@ -38,18 +38,18 @@ const ScheduleListComponent = ({
   const addedSchedules = useAppSelector(selectAdded);
   const dispatch = useDispatch();
 
-  const randomIcons = useMemo(
-    () => [
-      AcademicCapIcon,
-      BeakerIcon,
-      LanguageIcon,
-      MusicalNoteIcon,
-      RocketLaunchIcon,
-      ScaleIcon,
-      VariableIcon,
-    ],
-    [],
-  );
+  // const randomIcons = useMemo(
+  //   () => [
+  //     AcademicCapIcon,
+  //     BeakerIcon,
+  //     LanguageIcon,
+  //     MusicalNoteIcon,
+  //     RocketLaunchIcon,
+  //     ScaleIcon,
+  //     VariableIcon,
+  //   ],
+  //   [],
+  // );
 
   // bottom sheet modal
   const scheduleRef = useRef<BottomSheetModal>(null);

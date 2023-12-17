@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {AppStackParamsList, HomeTabParamsList} from '../../screens.types';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AccountComponent from './AccountComponent';

@@ -5,6 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -12,7 +13,7 @@ import {
 import {CourseSearchResult} from '../../../../store/types';
 import Config from 'react-native-config';
 import {toast} from '@baronha/ting';
-import DropdownSelect from 'react-native-input-select';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const CourseSearchFormComponent = ({
   navigation,
@@ -136,35 +137,44 @@ const CourseSearchFormComponent = ({
             Search Classes
           </Text>
           <ScrollView>
-            <View className="flex items-center">
+            <View className="flex items-center space-y-4">
               <View className="w-10/12">
                 <Text className="text-lg font-semibold">Term</Text>
-                <DropdownSelect
+                <Dropdown
+                  style={styles.dropdown}
+                  data={term}
+                  search
+                  labelField="label"
+                  valueField="value"
+                  searchField="label"
                   placeholder={term[0]?.label ?? ''}
-                  options={term}
-                  selectedValue={selectedTerm}
-                  onValueChange={setSelectedTerm}
-                  isSearchable={true}
+                  onChange={item => setSelectedTerm(item.value)}
                 />
               </View>
               <View className="w-10/12">
                 <Text className="text-lg font-semibold">General Education</Text>
-                <DropdownSelect
+                <Dropdown
+                  style={styles.dropdown}
+                  data={GE}
+                  search
+                  labelField="label"
+                  valueField="value"
+                  searchField="label"
                   placeholder={GE[0]?.label ?? ''}
-                  options={GE}
-                  selectedValue={selectedGE}
-                  onValueChange={setSelectedGE}
-                  isSearchable={true}
+                  onChange={item => setSelectedGE(item.value)}
                 />
               </View>
               <View className="w-10/12">
                 <Text className="text-lg font-semibold">Department</Text>
-                <DropdownSelect
+                <Dropdown
+                  style={styles.dropdown}
+                  data={dept}
+                  search
+                  labelField="label"
+                  valueField="value"
+                  searchField="label"
                   placeholder={dept[0]?.label ?? ''}
-                  options={dept}
-                  selectedValue={selectedDept}
-                  onValueChange={setSelectedDept}
-                  isSearchable={true}
+                  onChange={item => setSelectedDept(item.value)}
                 />
               </View>
             </View>
@@ -187,3 +197,13 @@ const CourseSearchFormComponent = ({
 };
 
 export default CourseSearchFormComponent;
+
+const styles = StyleSheet.create({
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+});

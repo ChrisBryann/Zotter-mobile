@@ -1,6 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../configureStore';
-import {CourseItem, CourseSchedule, ScheduleState} from '../types';
+import {CourseItem, ScheduleState} from '../types';
 import {
   COMBINED_DAYS,
   DAYS,

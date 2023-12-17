@@ -12,7 +12,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import WelcomeComponent from './components/Welcome/WelcomeComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StatusBar} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 const AppStack = createNativeStackNavigator<AppStackParamsList>();
 
 const App = () => {
@@ -37,7 +37,7 @@ const App = () => {
       <StatusBar barStyle={'dark-content'} />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <GestureHandlerRootView style={{flex: 1}}>
+          <GestureHandlerRootView style={style.gestureHandler}>
             <BottomSheetModalProvider>
               <NavigationContainer>
                 <AppStack.Navigator
@@ -73,3 +73,7 @@ const App = () => {
 };
 
 export default App;
+
+const style = StyleSheet.create({
+  gestureHandler: {flex: 1},
+});

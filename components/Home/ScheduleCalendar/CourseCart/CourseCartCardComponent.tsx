@@ -1,9 +1,9 @@
 import React from 'react';
-import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {TrashIcon} from 'react-native-heroicons/outline';
 import {CourseItem} from '../../../../store/types';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { toast } from '@baronha/ting';
+import {toast} from '@baronha/ting';
 
 type CourseCartCardProps = {
   item: CourseItem;
@@ -18,7 +18,9 @@ const CourseCartCardComponent = ({item, onRemove}: CourseCartCardProps) => {
 
     <View className="flex flex-row items-center justify-between my-2  p-3">
       <View>
-        <Text className="text-lg font-bold text-gray-900">{item.title}</Text>
+        <Text className="text-lg font-bold text-gray-900">
+          {item.title} - {item.type}
+        </Text>
 
         <View className="mt-0.5  text-gray-600">
           <Text className="text-gray-700">{item.location}</Text>

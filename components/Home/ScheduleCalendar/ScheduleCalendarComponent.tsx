@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {ScheduleScreenParamsList} from '../../../screens.types';
 
@@ -15,8 +15,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   AcademicCapIcon,
   BookmarkSquareIcon,
-  ChartBarIcon,
-  MapIcon,
   ShoppingBagIcon,
 } from 'react-native-heroicons/solid';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -98,33 +96,36 @@ const ScheduleCalendarComponent = ({
     console.log('TimelineCalendarScreen onMonthChange: ', month, updateSource);
   };
 
-  const timelineProps: Partial<TimelineProps> = {
-    format24h: true,
-    onEventPress: event => {
-      const currentCourse = courseSchedule.courses.find(
-        (course: CourseItem) => course.id === event.id?.split('@')[0],
-      )!; //id is always set, so don't worry
-      console.log(currentCourse);
+  const timelineProps: Partial<TimelineProps> = useMemo(
+    () => ({
+      format24h: true,
+      onEventPress: event => {
+        const currentCourse = courseSchedule.courses.find(
+          (course: CourseItem) => course.id === event.id?.split('@')[0],
+        )!; //id is always set, so don't worry
+        console.log(currentCourse);
 
-      setSelectedCourse(currentCourse);
-      handleExpandPress();
-      console.log(event);
-    },
-    // onBackgroundLongPress: this.createNewEvent,
-    // onBackgroundLongPressOut: this.approveNewEvent,
-    // scrollToFirst: true,
-    start: 7,
-    end: 22,
-    overlapEventsSpacing: 8,
-    rightEdgeSpacing: 24,
-  };
+        setSelectedCourse(currentCourse);
+        handleExpandPress();
+        console.log(event);
+      },
+      // onBackgroundLongPress: this.createNewEvent,
+      // onBackgroundLongPressOut: this.approveNewEvent,
+      // scrollToFirst: true,
+      start: 7,
+      end: 22,
+      overlapEventsSpacing: 8,
+      rightEdgeSpacing: 24,
+    }),
+    [courseSchedule.courses, handleExpandPress],
+  );
   const INITIAL_TIME = {hour: 7, minutes: 0};
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     console.log(courseSchedule);
     // fix dates of appointments if we're in a different week --> infinite loop
-    setScheduleName(courseSchedule.title);
+    courseSchedule.title && setScheduleName(courseSchedule.title);
     setEventsByDate(
       courseSchedule.appointments.reduce(
         (obj: any, item) => ({
@@ -153,7 +154,7 @@ const ScheduleCalendarComponent = ({
     });
 
     return unsubscribe;
-  });
+  }, [currentDate, dispatch, timelineProps, navigation]);
 
   return (
     <View

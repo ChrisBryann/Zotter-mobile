@@ -24,7 +24,7 @@ const CourseCartComponent = ({
         onRemove={() => dispatch(deleteCurrentCourseAppointment(item.id))}
       />
     ),
-    [],
+    [dispatch],
   );
 
   return (
